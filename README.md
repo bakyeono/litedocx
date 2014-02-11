@@ -28,7 +28,7 @@ This project is not yet documented properly.
 
 - E-mail: bakyeono@gmail.com
 
-- Website: www.bakyeono.net
+- Website: http://bakyeono.net
 
 ## License
 

@@ -1,10 +1,10 @@
 # litedocx
 
-**Currently in development**
+## Currently in development
 
-A Clojure library to write Microsoft Office Word 2007 document(a.k.a. DOCX) format. Does your data analysis application need to write reports in DOCX format without load too heavy tools? Try this and be happy.
+A Clojure library to write Microsoft Office Word 2007 document(a.k.a. DOCX). Does your data analysis application need to write reports in DOCX format without load too heavy tools? Try this and be happy.
 
-What litedocx offers
+### What litedocx offers
 
 - a Clojure-friendly, brain-safe interface
 
@@ -12,7 +12,7 @@ What litedocx offers
 
 - essential functions to create ordinary DOCX files (includes tabling, styling, inserting images etc.)
 
-What litedocx does **not** offers *(currently not planed)*
+### What litedocx does **not** offers *(currently not planed)*
 
 - building some serious DOCX documents (Java library 'docx4j' is recommended for this.)
 

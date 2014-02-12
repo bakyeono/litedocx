@@ -70,4 +70,9 @@
   [target]
   (println "Hello, World!"))
 
+(defn line-and-print-tags
+  "Prints xml-like document with every tag line feeded."
+  [s]
+  (print (str/replace s #">" ">\n")))
+
 

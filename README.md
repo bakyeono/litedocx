@@ -12,7 +12,7 @@ A Clojure library to write Microsoft Office Word 2007 document(a.k.a. DOCX). Doe
 
 - essential functions to create ordinary DOCX files (includes tabling, styling, inserting images etc.)
 
-### What litedocx does **not** offers *(currently not planed)*
+### What litedocx does **not** offers *(currently not planned)*
 
 - building some serious DOCX documents (Java library 'docx4j' is recommended for this.)
 

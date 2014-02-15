@@ -4,7 +4,8 @@
   (:import [java.util.zip ZipEntry ZipOutputStream])
   (:require [clojure.string :as str])
   (:require [clojure.zip :as z])
-  (:require [clojure.java.io :as io]))
+  (:require [clojure.java.io :as io])
+  (:require [clojure.xml :as xml]))
 
 ;;; Collection
 (defn mapstr
@@ -12,6 +13,11 @@
   to f and colls.  Thus function f should return a collection."
   [f & colls]
   (apply str (apply map f colls)))
+
+(defn remove-nil
+  "Returns sequence filtered nil-values."
+  [s]
+  (filter identity s))
 
 ;;; String
 (defn to-camel-case
@@ -75,4 +81,8 @@
   [s]
   (print (str/replace s #">" ">\n")))
 
+(defn load-xml
+  [src]
+  (-> (io/file src)
+      xml/parse))
 

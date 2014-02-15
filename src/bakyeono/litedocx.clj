@@ -1,13 +1,13 @@
 (ns bakyeono.litedocx
   "litedocx is a light-weight DOCX format writer library for Clojure."
-  (:use [bakyeono.litedocx.util])
-  (:require [bakyeono.litedocx.wpml :as w]))
+  (:require [clojure.xml :as xml])
+  (:require [bakyeono.litedocx.wpml :as w]) 
+  (:use [bakyeono.litedocx.util]))
 
 (defrecord Resource [id type content-type part-name])
 
 ;;; DOCX package
-
-(defn create-docx-package
+(defn pack-docx
   "Creates DOCX package."
   [dst]
   (let [content-types-xml (w/content-types-xml [])
@@ -18,11 +18,10 @@
         word-media-resources nil
         word-rels-document-xml-rels (w/word-rels-document-xml-rels [])]
     (write-zip dst
-               "[Content_Types].xml" content-types-xml
-               "docProps/app.xml" doc-props-app-xml
-               "docProps/core.xml" doc-props-core-xml
-               "word/document.xml" word-document-xml
-               "word/styles.xml" word-styles-xml
-               "word/_rels/document.xml.rels" word-rels-document-xml-rels 
-               )))
+               "[Content_Types].xml" (xml/emit content-types-xml)
+               "docProps/app.xml" (xml/emit doc-props-app-xml)
+               "docProps/core.xml" (xml/emit doc-props-core-xml)
+               "word/document.xml" (xml/emit word-document-xml)
+               "word/styles.xml" (xml/emit word-styles-xml)
+               "word/_rels/document.xml.rels" (xml/emit word-rels-document-xml-rels))))
 

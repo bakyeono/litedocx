@@ -3,34 +3,86 @@
             [bakyeono.litedocx.wpml :refer :all]))
 
 (deftest when-v-tag-test
-  (is (= (when-v-tag nil "Tag1") nil))
-  (is (= (when-v-tag false "Boolean") "<Boolean>false</Boolean>"))
-  (is (= (when-v-tag "" "EmptyTag") "<EmptyTag/>"))
-  (is (= (when-v-tag 911 "Number") "<Number>911</Number>"))
-  (is (= (when-v-tag "100" "Value") "<Value>100</Value>")))
+  (is (= (when-v-tag nil :Tag1)
+         nil))
+  (is (= (when-v-tag false :Boolean)
+         {:tag :Boolean
+          :content ["false"]}))
+  (is (= (when-v-tag "" :emptyTag)
+         {:tag :emptyTag}))
+  (is (= (when-v-tag 32767 :number)
+         {:tag :number
+          :content ["32767"]}))
+  (is (= (when-v-tag "100" :Value)
+         {:tag :Value
+          :content ["100"]})))
+
+(deftest when-v-kv-test
+  (is (= (when-v-kv nil :name)
+         nil))
+  (is (= (when-v-kv "Bak Yeon O" :name)
+         [:name "Bak Yeon O"]))
+  (is (= (when-v-kv 28 :age)
+         [:age 28]))
+  (is (= (when-v-kv false :dead?)
+         [:dead? false])))
+
+(deftest make-attrs-test
+  (is (= (make-attrs :w:before nil
+                     :w:after "20"
+                     :w:line "30"
+                     :w:lineRule "auto")
+         {:w:after "20"
+          :w:line"30"
+          :w:lineRule "auto"})))
 
 (deftest content-types-xml-test
   nil)
 
 (deftest doc-props-app-xml-test
   (is (= (doc-props-app-xml)
-         "<properties:Properties xmlns:vt=\"http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes\" xmlns:properties=\"http://schemas.openxmlformats.org/officeDocument/2006/extended-properties\"></properties:Properties>")) 
+         {:tag :properties:Properties
+          :attrs {:xmlns:vt "http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes"
+                  :xmlns:properties "http://schemas.openxmlformats.org/officeDocument/2006/extended-properties"}
+          :content '()}))
   (is (= (doc-props-app-xml
            :application "Microsoft Office Word"
-           :company ""
            :app-version "12.0000")
-         "<properties:Properties xmlns:vt=\"http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes\" xmlns:properties=\"http://schemas.openxmlformats.org/officeDocument/2006/extended-properties\"><Application>Microsoft Office Word</Application><Company/><AppVersion>12.0000</AppVersion></properties:Properties>")))
+         {:tag :properties:Properties
+          :attrs {:xmlns:vt "http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes"
+                  :xmlns:properties "http://schemas.openxmlformats.org/officeDocument/2006/extended-properties"} 
+          :content
+          [{:tag :properties:Application
+            :content ["Microsoft Office Word"]}
+           {:tag :properties:AppVersion
+            :content ["12.0000"]}]})))
 
 (deftest doc-props-core-xml-test
   (is (= (doc-props-core-xml)
-         "<cp:coreProperties xmlns:cp=\"http://schemas.openxmlformats.org/package/2006/metadata/core-properties\" xmlns:dcterms=\"http://purl.org/dc/terms/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\"></cp:coreProperties>"))
+         {:tag :cp:coreProperties
+          :attrs 
+          {:xmlns:cp "http://schemas.openxmlformats.org/package/2006/metadata/core-properties"
+           :xmlns:dcterms "http://purl.org/dc/terms/"
+           :xmlns:dc "http://purl.org/dc/elements/1.1/"} 
+          :content '()}))
   (is (= (doc-props-core-xml :title "MongoDB in Action"
-                                     :subject ""
-                                     :creator "Kyle Banker"
-                                     :keywords ""
-                                     :description ""
-                                     :last-modified-by "Kyle Banker"))
-      "<cp:coreProperties xmlns:cp=\"http://schemas.openxmlformats.org/package/2006/metadata/core-properties\" xmlns:dcterms=\"http://purl.org/dc/terms/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\"><dc:title>MongoDB in Action</dc:title><dc:subject/><dc:creator>Kyle Banker</dc:creator><cp:keywords/><dc:description/><cp:lastModifiedBy>Kyle Banker</cp:lastModifiedBy></cp:coreProperties>"))
+                             :subject ""
+                             :creator "Kyle Banker"
+                             :keywords ""
+                             :description ""
+                             :last-modified-by "Kyle Banker")
+      {:tag :cp:coreProperties
+       :attrs 
+       {:xmlns:cp "http://schemas.openxmlformats.org/package/2006/metadata/core-properties"
+        :xmlns:dcterms "http://purl.org/dc/terms/"
+        :xmlns:dc "http://purl.org/dc/elements/1.1/"} 
+       :content
+       [{:tag :dc:title :content ["MongoDB in Action"]}
+        {:tag :dc:subject}
+        {:tag :dc:creator :content ["Kyle Banker"]}
+        {:tag :cp:keywords}
+        {:tag :dc:description}
+        {:tag :cp:lastModifiedBy :content ["Kyle Banker"]}]})))
 
 (deftest word-document-xml-test
   nil)
@@ -43,23 +95,5 @@
 
 (deftest word-rels-document-xml-rels-test
   nil)
-
-
-(deftest paragraph-style-test
-  (is (paragraph-style "PARAGRAPH1"
-                       :font "Arial"
-                       :font-size 12
-                       :font-color "0022CC")
-      (str "<w:style w:type=\"paragraph\" w:styleId=\"PARAGRAPH1\" w:customStyle=\"true\">"
-           "<w:name w:val=\"PARAGRAPH1\"/>"
-           "<w:basedOn w:val=\"a\"/>"
-           "<w:link w:val=\"character-style-for-paragraph-style-PARAGRAPH1\"/>"
-           "<w:qFormat/>"
-           "<w:rPr>"
-           "<w:rFonts w:ascii=\"NanumGothic\" w:hAnsi=\"NanumGothic\" w:eastAsia=\"NanumGothic\"/>"
-           "<w:sz w:val=\"12\"/>"
-           "<w:color w:val=\"0022CC\"/>"
-           "</w:rPr>"
-           "</w:style>")))
 
 

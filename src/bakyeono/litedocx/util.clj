@@ -1,6 +1,6 @@
 (ns bakyeono.litedocx.util
   "Custom utilities used in litedocx."
-  (:import [java.io OutputStream])
+  (:import [java.io DataInputStream FileInputStream OutputStream])
   (:import [java.util.zip ZipEntry ZipOutputStream])
   (:require [clojure.string :as str])
   (:require [clojure.zip :as z])
@@ -81,14 +81,25 @@
   [s]
   (print (str/replace s #">" ">\n")))
 
-(defn load-xml
+(defn read-xml
+  "Returns a XML tree filled with the data of given source file path."
   [src]
   (-> (io/file src)
       xml/parse))
 
 (defn emit-xml-as-str
+  "Emits XML as string."
   [root]
   (with-out-str
     (xml/emit root)))
 
+(defn load-byte-array
+  "Loads data from the given source file path as a byte array."
+  [src]
+  (let [file (io/file src)
+        array (make-array Byte/TYPE (.length file))]
+    (with-open [ifstream (FileInputStream. file)
+                idstream (DataInputStream. ifstream)]
+      (.readFully idstream array)
+      array)))
 

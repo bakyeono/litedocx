@@ -148,6 +148,7 @@
    :type (content-type->relationship-type content-type)
    :content-type content-type
    :target (str "media/" filename)
+   :path (str "word/media/" filename)
    :body body})
 
 (defn make-resources
@@ -336,9 +337,15 @@
    :content (remove-nil (flatten [default-styles styles]))})
 
 (defn word-media-resources
-  ""
-  []
-  nil)
+  "Creates a vector of resource data map. Each map has :path and :byte-array
+  keys and their values.
+  Parameters:
+  - resources: <vector of {:path <string>, :body <byte-array>}>}\n
+  Note that resources should be created by make-resources."
+  [resources]
+  (flatten
+    (for [{:keys [path body]} (drop 1 resources)]
+      [path body])))
 
 (defn- rels
   "Returns Relationship xml tag node of given resource information map.

@@ -42,6 +42,9 @@
    :xmlns:odgm "http://opendope.org/SmartArt/DataHierarchy"
    :xmlns:w "http://schemas.openxmlformats.org/wordprocessingml/2006/main"})
 
+(def ^:const ^{:private true} word-rels-document-xml-rels-xmlns 
+  {:xmlns "http://schemas.openxmlformats.org/package/2006/relationships"})
+
 (def ^:const ^{:private true} default-content-types
   [{:tag :Default
     :attrs {:Extension "rels"
@@ -54,10 +57,7 @@
             :PartName "/docProps/core.xml"}}
    {:tag :Override
     :attrs {:ContentType "application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"
-            :PartName "/word/document.xml"}}
-   {:tag :Override
-    :attrs {:ContentType "application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"
-            :PartName "/word/styles.xml"}}])
+            :PartName "/word/document.xml"}}])
 
 (def ^:const ^{:private true} default-styles
   [{:tag :w:style
@@ -127,23 +127,59 @@
           (for [[k v] (partition 2 kvs)]
             (when-v-kv v k)))))
 
+(def ^:const ^{:private true} styles-xml-resource
+  {:id "rId1"
+   :part-name "/word/styles.xml"
+   :type "http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles"
+   :content-type "application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"
+   :target "styles.xml"})
+
+(defn- content-type->relationship-type
+  [content-type]
+  (str "http://schemas.openxmlformats.org/officeDocument/2006/relationships/"
+       (re-find #"[\w]*" content-type)))
+
+(defn- make-resource
+  "Creates an external resource information map for DOCX pakcage.
+  Called by make-resources"
+  [i [content-type filename body]]
+  {:id (str "rId" i)
+   :part-name (str "/word/media/" filename)
+   :type (content-type->relationship-type content-type)
+   :content-type content-type
+   :target (str "media/" filename)
+   :body body})
+
+(defn make-resources
+  "Creates a vector of external resource information maps for DOCX pakcage.\n
+  Parameters:
+  - & specs: [content-type filename body] of the resource, ...\n
+  Examples:
+  - (make-resources [\"image/png\" \"embeded_image1.png\" FILE_BODY] ...)"
+  [& specs]
+  (let [custom-resources (map make-resource
+                              (range 2 (+ 2 (count specs)))
+                              specs)] 
+    (cons styles-xml-resource custom-resources)))
+
+(defn- resource-type-override
+  "Returns Override xml tag node of given resource information map.
+  Called by content-types-xml."
+  [{:keys [content-type part-name]}]
+  {:tag :Override
+   :attrs {:ContentType content-type
+           :PartName part-name}})
+
 (defn content-types-xml
   "Creates xml data for [Content_Types].xml file in DOCX package.\n
   Parameters:
-  - resources: <vector of {:content-type <string>, :part-name <string>}>}"
+  - resources: <vector of {:content-type <string>, :part-name <string>}>}\n
+  Note that resources should be created by make-resources."
   [resources]
   {:tag :Types
    :attrs content-types-xml-xmlns
-   :content
-   (flatten
-     [;; default content types
-      default-content-types
-      ;; additional content types
-      (for [resource resources]
-        {:tag :Override
-         :attrs {:ContentType (:content-type resource)
-                 :PartName (:part-name resource)}
-         :content nil})])})
+   :content (into default-content-types
+                  (map resource-type-override resources))})
 
 (defn doc-props-app-xml
   "Creates xml data for docProps/app.xml file in DOCX pakcage.\n
@@ -155,11 +191,10 @@
       :keys [application app-version]}]
   {:tag :properties:Properties
    :attrs doc-props-app-xml-xmlns
-   :content
-   (remove-nil
-     (map when-v-tag
-          [application app-version]
-          [:properties:Application :properties:AppVersion]))})
+   :content (remove-nil
+              (map when-v-tag
+                   [application app-version]
+                   [:properties:Application :properties:AppVersion]))})
 
 (defn doc-props-core-xml
   "Creates xml data for docProps/core.xml file in DOCX pakcage.\n
@@ -171,19 +206,18 @@
       :keys [title subject creator keywords description last-modified-by]}]
   {:tag :cp:coreProperties
    :attrs doc-props-core-xml-xmlns
-   :content
-   (remove-nil
-     (map when-v-tag
-          [title subject creator keywords description last-modified-by]
-          [:dc:title :dc:subject :dc:creator :cp:keywords :dc:description :cp:lastModifiedBy]))})
+   :content (remove-nil
+              (map when-v-tag
+                   [title subject creator keywords description last-modified-by]
+                   [:dc:title :dc:subject :dc:creator :cp:keywords
+                    :dc:description :cp:lastModifiedBy]))})
 
 (defn word-document-xml
   "Creates xml data for word/document.xml file in DOCX pakcage.\n"
   []
   {:tag :w:document
    :attrs word-xmlns
-   :content
-   nil})
+   :content []})
 
 (defn- ppr
   "Creates w:pPr tag node. Called by paragaph-style."
@@ -193,55 +227,53 @@
            indent-left indent-right indent-first-line
            mirror-indents?]}]
   {:tag :w:pPr
-   :content
-   (remove-nil
-     [(when (or space-before space-after space-line)
-        {:tag :w:spacing
-         :attrs (make-attrs :w:before space-before
-                            :w:after space-after
-                            :w:line space-line
-                            :w:lineRule "auto")})
-      (when (or indent-left indent-right indent-first-line)
-        {:tag :w:ind
-         :attrs (make-attrs :w:left indent-left
-                            :w:right indent-right
-                            :w:firstLine indent-first-line)})
-      (when mirror-indents?
-        {:tag :w:mirrorIndents})
-      (when align
-        {:tag :w:jc
-         :attrs {:w:val align}})])})
+   :content (remove-nil
+              [(when (or space-before space-after space-line)
+                 {:tag :w:spacing
+                  :attrs (make-attrs :w:before space-before
+                                     :w:after space-after
+                                     :w:line space-line
+                                     :w:lineRule "auto")})
+               (when (or indent-left indent-right indent-first-line)
+                 {:tag :w:ind
+                  :attrs (make-attrs :w:left indent-left
+                                     :w:right indent-right
+                                     :w:firstLine indent-first-line)})
+               (when mirror-indents?
+                 {:tag :w:mirrorIndents})
+               (when align
+                 {:tag :w:jc
+                  :attrs {:w:val align}})])})
 
 (defn- rpr
   "Creates w:rPr tag node. Called by paragaph-style."
   [{:as options
     :keys [font font-size font-color bold? italic? underline? strike?]}]
   {:tag :w:rPr
-   :content
-   (remove-nil
-     [(when font
-        {:tag :w:rFonts
-         :attrs {:w:ascii font
-                 :w:hAnsi font
-                 :w:eastAsia font}})
-      (when font-size
-        {:tag :w:sz
-         :attrs {:w:val font-size}})
-      (when font-color
-        {:tag :w:color
-         :attrs {:w:val font-color}})
-      (when bold?
-        {:tag :w:b
-         :attrs {:w:val true}})
-      (when italic?
-        {:tag :w:b
-         :attrs {:w:val true}})
-      (when underline?
-        {:tag :w:u
-         :attrs {:w:val "single"}})
-      (when strike?
-        {:tag :w:strike
-         :attrs {:w:val true}})])})
+   :content (remove-nil
+              [(when font
+                 {:tag :w:rFonts
+                  :attrs {:w:ascii font
+                          :w:hAnsi font
+                          :w:eastAsia font}})
+               (when font-size
+                 {:tag :w:sz
+                  :attrs {:w:val font-size}})
+               (when font-color
+                 {:tag :w:color
+                  :attrs {:w:val font-color}})
+               (when bold?
+                 {:tag :w:b
+                  :attrs {:w:val true}})
+               (when italic?
+                 {:tag :w:b
+                  :attrs {:w:val true}})
+               (when underline?
+                 {:tag :w:u
+                  :attrs {:w:val "single"}})
+               (when strike?
+                 {:tag :w:strike
+                  :attrs {:w:val true}})])})
 
 (defn paragraph-style
   "Creates a w:style tag of paragraph. Returns w:style tag for paragraph style with
@@ -308,8 +340,22 @@
   []
   nil)
 
+(defn- rels
+  "Returns Relationship xml tag node of given resource information map.
+  Called by word-rels-document-xml-rels."
+  [{:keys [id type target]}]
+  {:tag :Relationship
+   :attrs {:id id
+           :Type type
+           :Target target}})
+
 (defn word-rels-document-xml-rels
-  ""
+  "Creates xml data for word/_rels/document.xml.rels file in DOCX package.\n
+  Parameters:
+  - resources: <vector of {:id <number>, :type <string>, :target <string>}>}\n
+  Note that resources should be created by make-resources."
   [resources]
-  nil)
+  {:tag :Relationships
+   :attrs word-rels-document-xml-rels-xmlns
+   :content (map rels resources)})
 

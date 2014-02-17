@@ -86,3 +86,9 @@
   (-> (io/file src)
       xml/parse))
 
+(defn emit-xml-as-str
+  [root]
+  (with-out-str
+    (xml/emit root)))
+
+

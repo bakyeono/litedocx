@@ -412,3 +412,44 @@
             :attrs {:w:gridCol w}})}]
        body))})
 
+(defn tr
+  "Returns XML tag node of table.
+
+  Parameters:
+  - & body: content of row (td is expected)"
+  [& body]
+  {:tag :w:tr
+   :content (remove-nil body)})
+
+(defn td
+  "Returns XML tag node of table.
+
+  Parameters:
+  - width: width of cell
+  - & body: content of cell"
+  [width & body]
+  {:tag :w:tc
+   :content
+   [{:tag :w:tcPr
+     :content
+     (remove-nil
+       (into
+         [{:tag :w:tcW
+           :attrs {:w:w width
+                   :w:type "dxa"}}]    
+         body))}]})
+
+(defn p
+  "Returns XML tag node of paragraph.
+  
+  Parameters:
+  - style: <string> style of paragraph
+  - text: <string> text in paragraph"
+  ([style text]
+   {:tag :w:p
+    :content
+    [{:tag :w:r
+      :content
+      [{:tag :w:t
+        :content [text]}]}]}))
+

@@ -152,9 +152,11 @@
    :body body})
 
 (defn make-resources
-  "Creates a vector of external resource information maps for DOCX pakcage.\n
+  "Creates a vector of external resource information maps for DOCX pakcage.
+
   Parameters:
-  - & specs: [content-type filename body] of the resource, ...\n
+  - & specs: [content-type filename body] of the resource, ...
+
   Examples:
   - (make-resources [\"image/png\" \"embeded_image1.png\" FILE_BODY] ...)"
   [& specs]
@@ -172,9 +174,11 @@
            :PartName part-name}})
 
 (defn content-types-xml
-  "Creates xml data for [Content_Types].xml file in DOCX package.\n
+  "Creates xml data for [Content_Types].xml file in DOCX package.
+
   Parameters:
-  - resources: <vector of {:content-type <string>, :part-name <string>}>}\n
+  - resources: <vector of {:content-type <string>, :part-name <string>}>}
+
   Note that resources should be created by make-resources."
   [resources]
   {:tag :Types
@@ -183,9 +187,11 @@
                   (map resource-type-override resources))})
 
 (defn doc-props-app-xml
-  "Creates xml data for docProps/app.xml file in DOCX pakcage.\n
+  "Creates xml data for docProps/app.xml file in DOCX pakcage.
+
   Parameters:
-  - & properties: option, value, ...\n
+  - & properties: option, value, ...
+
   Examples:
   - (doc-props-app-xml :application \"Microsoft Office Word\" :app-version \"12.0000\")"
   [& {:as options
@@ -198,9 +204,11 @@
                    [:properties:Application :properties:AppVersion]))})
 
 (defn doc-props-core-xml
-  "Creates xml data for docProps/core.xml file in DOCX pakcage.\n
+  "Creates xml data for docProps/core.xml file in DOCX pakcage.
+
   Parameters:
-  - & properties: option, value, ...\n
+  - & properties: option, value, ...
+
   Examples:
   - (doc-props-core-xml :creator \"Bak Yeon O\" :last-modified-by \"Bak Yeon O\")"
   [& {:as properties
@@ -214,7 +222,7 @@
                     :dc:description :cp:lastModifiedBy]))})
 
 (defn word-document-xml
-  "Creates xml data for word/document.xml file in DOCX pakcage.\n"
+  "Creates xml data for word/document.xml file in DOCX pakcage."
   []
   {:tag :w:document
    :attrs word-xmlns
@@ -279,13 +287,16 @@
 (defn paragraph-style
   "Creates a w:style tag of paragraph. Returns w:style tag for paragraph style with
   w:style tag for the font, as a vector containing both of them.
-  Needed for word-styles-xml.\n
+  Needed for word-styles-xml.
+
   Parameters:
   - name: <string> What others call this style. Also used as style-id. Must be unique.
-  - & options: option, value, ...\n
+  - & options: option, value, ...
+
   Examples:
   - (paragraph-style \"paragraph1\")
-  - (paragraph-style \"paragraph2\" :font \"Arial\" :font-color \"0000AA\" :align \"both\")\n
+  - (paragraph-style \"paragraph2\" :font \"Arial\" :font-color \"0000AA\" :align \"both\")
+
   See More: "
   [name
    & {:as options  
@@ -340,7 +351,8 @@
   "Creates a vector of resource data map. Each map has :path and :byte-array
   keys and their values.
   Parameters:
-  - resources: <vector of {:path <string>, :body <byte-array>}>}\n
+  - resources: <vector of {:path <string>, :body <byte-array>}>}
+
   Note that resources should be created by make-resources."
   [resources]
   (flatten
@@ -357,12 +369,46 @@
            :Target target}})
 
 (defn word-rels-document-xml-rels
-  "Creates xml data for word/_rels/document.xml.rels file in DOCX package.\n
+  "Creates xml data for word/_rels/document.xml.rels file in DOCX package.
+
   Parameters:
-  - resources: <vector of {:id <number>, :type <string>, :target <string>}>}\n
+  - resources: <vector of {:id <number>, :type <string>, :target <string>}>}
+
   Note that resources should be created by make-resources."
   [resources]
   {:tag :Relationships
    :attrs word-rels-document-xml-rels-xmlns
    :content (map rels resources)})
+
+(defn table
+  "Creates xml data of table.
+
+  Parameters:
+  - style: <string> style of table
+  - h-align: <string or keyword> horizontal alignment option in each cell.
+  - widths: <vector of numbers> widths of cells
+  - & body: content of the table
+
+  Examples:
+  (table \"table-style1\" :center [964 964 8072] ...)"
+  [style h-align widths & body]
+  {:tag :w:tbl
+   :content
+   (remove-nil
+     (into
+       [{:tag :w:tblPr
+         :content
+         [{:tag :w:tblStyle
+           :attrs {:w:val style}}
+          {:tag :w:tblW
+           :attrs {:w:w (reduce + widths)
+                   :w:type "dxa"}}
+          {:tag :w:jc
+           :attrs {:w:val (name h-align)}}]}
+        {:tag :w:tblGrid
+         :content
+         (for [w widths]
+           {:tag :w:gridCol
+            :attrs {:w:gridCol w}})}]
+       body))})
 

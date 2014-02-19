@@ -6,6 +6,9 @@
 (def ^:const ^{:private true} content-types-xml-xmlns
   {:xmlns "http://schemas.openxmlformats.org/package/2006/content-types"})
 
+(def ^:const ^{:private true} relationships-xmlns 
+  {:xmlns "http://schemas.openxmlformats.org/package/2006/relationships"})
+
 (def ^:const ^{:private true} doc-props-app-xml-xmlns
   {:xmlns:vt "http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes"
    :xmlns:properties "http://schemas.openxmlformats.org/officeDocument/2006/extended-properties"})
@@ -41,9 +44,6 @@
    :xmlns:ns17 "urn:schemas-microsoft-com:office:powerpoint"
    :xmlns:odgm "http://opendope.org/SmartArt/DataHierarchy"
    :xmlns:w "http://schemas.openxmlformats.org/wordprocessingml/2006/main"})
-
-(def ^:const ^{:private true} word-rels-document-xml-rels-xmlns 
-  {:xmlns "http://schemas.openxmlformats.org/package/2006/relationships"})
 
 (def ^:const ^{:private true} default-content-types
   [{:tag :Default
@@ -203,6 +203,28 @@
                    [application app-version]
                    [:properties:Application :properties:AppVersion]))})
 
+(defn rels-rels
+  "Creates XML data for _rels/.rels file in DOCX package."
+  []
+  {:tag :Relationships
+   :attrs relationships-xmlns
+   :content
+   [{:tag :Relationship
+     :attrs
+     {:Id "rId1"
+      :Type "http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" 
+      :Target "word/document.xml"}}
+    {:tag :Relationship
+     :attrs
+     {:Id "rId2"
+      :Type "http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties"
+      :Target "docProps/core.xml"}}
+    {:tag :Relationship
+     :attrs
+     {:Id "rId3"
+      :Target "docProps/app.xml"
+      :Type "http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties"}}]})
+
 (defn doc-props-core-xml
   "Creates XML data for docProps/core.xml file in DOCX pakcage.
 
@@ -223,10 +245,26 @@
 
 (defn word-document-xml
   "Creates XML data for word/document.xml file in DOCX pakcage."
-  []
+  [& body]
   {:tag :w:document
    :attrs word-xmlns
-   :content []})
+   :content
+   [{:tag :w:body
+     :content 
+     (remove-nil
+       (conj
+         (remove-nil body) 
+         {:tag :w:sectPr
+          :content
+          [{:tag :w:pgSz
+            :attrs {:w:w 11907
+                    :w:h 16839
+                    :w:code 9}}
+           {:tag :w:pgMar
+            :attrs {:w:top 720
+                    :w:right 720
+                    :w:bottom 720
+                    :w:left 720}}]}))}]})
 
 (defn- ppr
   "Creates w:pPr tag node. Called by paragaph-style."
@@ -377,7 +415,7 @@
   Note that resources should be created by make-resources."
   [resources]
   {:tag :Relationships
-   :attrs word-rels-document-xml-rels-xmlns
+   :attrs relationships-xmlns
    :content (map rels resources)})
 
 (defn table
@@ -443,13 +481,24 @@
   "Returns XML tag node of paragraph.
 
   Parameters:
-  - style: <string> style of paragraph
+  - style: <string or keyword> style of paragraph
   - text: <string> text in paragraph"
-  ([style text]
+  ([text]
    {:tag :w:p
     :content
     [{:tag :w:r
       :content
       [{:tag :w:t
-        :content [text]}]}]}))
+        :content [text]}]}]})
+  ([style text]
+   {:tag :w:p
+    :content
+    [{:tag :w:pPr
+      :content
+      [{:tag :w:pStyle
+        :attrs {:w:val (name style)}}]}
+     {:tag :w:r
+      :content
+      [{:tag :w:t
+        :content [text]}]}]})) 
 

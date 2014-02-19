@@ -12,13 +12,21 @@
   Resources are created by w/make-resources."
   [dst styles resources]
   (let [content-types-xml (w/content-types-xml resources)
+        rels-rels (w/rels-rels)
         doc-props-app-xml (w/doc-props-app-xml)
         doc-props-core-xml (w/doc-props-core-xml)
-        word-document-xml (w/word-document-xml)
+        word-document-xml (w/word-document-xml
+                            (w/table "a1" :center [964 964 8072]
+                                     (w/tr (w/td 964 (w/p "name"))
+                                           (w/td 964 (w/p "age"))
+                                           (w/td 8072 (w/p "description"))))
+                            (w/p "a"
+                                 "This is a paragraph."))
         word-styles-xml (w/word-styles-xml styles)
         word-rels-document-xml-rels (w/word-rels-document-xml-rels resources)
         word-media-resources (w/word-media-resources resources)
         entries ["[Content_Types].xml" (emit-xml-as-str content-types-xml)
+                 "_rels/.rels" (emit-xml-as-str rels-rels)
                  "docProps/app.xml" (emit-xml-as-str doc-props-app-xml)
                  "docProps/core.xml" (emit-xml-as-str doc-props-core-xml)
                  "word/document.xml" (emit-xml-as-str word-document-xml)
@@ -29,8 +37,12 @@
 (defn sample-pack
   []
   (pack-docx
-    "sample-pack.docx"
+    "SAMPLE.docx"
     []
     (w/make-resources
       ["image/png" "foo.png" (load-byte-array "foo.png")])))
+
+(defn sample-pack2
+  []
+  (pack-docx "SAMPLE2.docx" [] []))
 

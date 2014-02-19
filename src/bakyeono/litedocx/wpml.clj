@@ -436,12 +436,12 @@
        (into
          [{:tag :w:tcW
            :attrs {:w:w width
-                   :w:type "dxa"}}]    
+                   :w:type "dxa"}}]
          body))}]})
 
 (defn p
   "Returns XML tag node of paragraph.
-  
+
   Parameters:
   - style: <string> style of paragraph
   - text: <string> text in paragraph"

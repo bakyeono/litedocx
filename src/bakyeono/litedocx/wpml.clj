@@ -106,7 +106,7 @@
      {:tag :w:unhideWhenUsed :attrs nil :content nil}]}])
 
 (defn when-v-tag
-  "Returns an xml tag node when the value exists."
+  "Returns an XML tag node when the value exists."
   [v tag]
   (cond (nil? v) nil
         (= "" v) {:tag tag}
@@ -120,7 +120,7 @@
     [k v]))
 
 (defn make-attrs
-  "Returns an xml tag attributes without nil values."
+  "Returns an XML tag attributes without nil values."
   [& kvs]
   (into {}
         (remove-nil
@@ -166,7 +166,7 @@
     (cons styles-xml-resource custom-resources)))
 
 (defn- resource-type-override
-  "Returns Override xml tag node of given resource information map.
+  "Returns Override XML tag node of given resource information map.
   Called by content-types-xml."
   [{:keys [content-type part-name]}]
   {:tag :Override
@@ -174,7 +174,7 @@
            :PartName part-name}})
 
 (defn content-types-xml
-  "Creates xml data for [Content_Types].xml file in DOCX package.
+  "Creates XML data for [Content_Types].xml file in DOCX package.
 
   Parameters:
   - resources: <vector of {:content-type <string>, :part-name <string>}>}
@@ -187,7 +187,7 @@
                   (map resource-type-override resources))})
 
 (defn doc-props-app-xml
-  "Creates xml data for docProps/app.xml file in DOCX pakcage.
+  "Creates XML data for docProps/app.xml file in DOCX pakcage.
 
   Parameters:
   - & properties: option, value, ...
@@ -204,7 +204,7 @@
                    [:properties:Application :properties:AppVersion]))})
 
 (defn doc-props-core-xml
-  "Creates xml data for docProps/core.xml file in DOCX pakcage.
+  "Creates XML data for docProps/core.xml file in DOCX pakcage.
 
   Parameters:
   - & properties: option, value, ...
@@ -222,7 +222,7 @@
                     :dc:description :cp:lastModifiedBy]))})
 
 (defn word-document-xml
-  "Creates xml data for word/document.xml file in DOCX pakcage."
+  "Creates XML data for word/document.xml file in DOCX pakcage."
   []
   {:tag :w:document
    :attrs word-xmlns
@@ -360,7 +360,7 @@
       [path body])))
 
 (defn- rels
-  "Returns Relationship xml tag node of given resource information map.
+  "Returns Relationship XML tag node of given resource information map.
   Called by word-rels-document-xml-rels."
   [{:keys [id type target]}]
   {:tag :Relationship
@@ -369,7 +369,7 @@
            :Target target}})
 
 (defn word-rels-document-xml-rels
-  "Creates xml data for word/_rels/document.xml.rels file in DOCX package.
+  "Creates XML data for word/_rels/document.xml.rels file in DOCX package.
 
   Parameters:
   - resources: <vector of {:id <number>, :type <string>, :target <string>}>}
@@ -381,13 +381,13 @@
    :content (map rels resources)})
 
 (defn table
-  "Creates xml data of table.
+  "Returns XML tag node of table.
 
   Parameters:
   - style: <string> style of table
   - h-align: <string or keyword> horizontal alignment option in each cell.
   - widths: <vector of numbers> widths of cells
-  - & body: content of the table
+  - & body: content of table (tr is expected)
 
   Examples:
   (table \"table-style1\" :center [964 964 8072] ...)"

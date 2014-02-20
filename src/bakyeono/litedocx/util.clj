@@ -1,6 +1,7 @@
 (ns bakyeono.litedocx.util
   "Custom utilities used in litedocx."
-  (:import [java.io DataInputStream FileInputStream OutputStream StringReader])
+  (:import [java.io DataInputStream FileInputStream OutputStream])
+  (:import [java.io StringReader StringWriter])
   (:import [java.util.zip ZipEntry ZipOutputStream])
   (:require [clojure.string :as str])
   (:require [clojure.zip :as z])
@@ -89,7 +90,7 @@
 (defn emit-xml-as-str
   "Emits XML data as string."
   [data]
-  (with-open [writer (java.io.StringWriter.)]
+  (with-open [writer (StringWriter.)]
     (xml/emit data writer)
     (.flush writer)
     (.toString writer)))

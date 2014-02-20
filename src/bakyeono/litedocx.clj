@@ -13,13 +13,13 @@
   [dst styles resources]
   (let [content-types-xml (w/content-types-xml resources)
         rels-rels (w/rels-rels)
-        doc-props-app-xml (w/doc-props-app-xml)
+        doc-props-app-xml (w/doc-props-app-xml :application "docx4j" :app-version 2.7)
         doc-props-core-xml (w/doc-props-core-xml)
         word-document-xml (w/word-document-xml
                             (w/table "a1" :center [964 964 8072]
-                                     (w/tr (w/td 964 (w/p "name"))
-                                           (w/td 964 (w/p "age"))
-                                           (w/td 8072 (w/p "description"))))
+                                     (w/tr (w/td 964 (w/p "a" "name"))
+                                           (w/td 964 (w/p "a" "age"))
+                                           (w/td 8072 (w/p "a" "description"))))
                             (w/p "a"
                                  "This is a paragraph."))
         word-styles-xml (w/word-styles-xml styles)

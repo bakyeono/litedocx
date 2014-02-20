@@ -402,7 +402,7 @@
   Called by word-rels-document-xml-rels."
   [{:keys [id type target]}]
   {:tag :Relationship
-   :attrs {:id id
+   :attrs {:Id id
            :Type type
            :Target target}})
 
@@ -468,14 +468,14 @@
   [width & body]
   {:tag :w:tc
    :content
-   [{:tag :w:tcPr
-     :content
-     (remove-nil
-       (into
+   (remove-nil
+     (into
+       [{:tag :w:tcPr
+         :content
          [{:tag :w:tcW
            :attrs {:w:w width
-                   :w:type "dxa"}}]
-         body))}]})
+                   :w:type "dxa"}}]}]
+       body))})
 
 (defn p
   "Returns XML tag node of paragraph.
@@ -499,6 +499,10 @@
         :attrs {:w:val (name style)}}]}
      {:tag :w:r
       :content
-      [{:tag :w:t
+      [{:tag :w:rPr
+        :content
+        [{:tag :w:rFonts
+          :attrs {:w:hint "eastAsia"}}]}
+       {:tag :w:t
         :content [text]}]}]})) 
 

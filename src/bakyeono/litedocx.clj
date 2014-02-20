@@ -1,6 +1,6 @@
 (ns bakyeono.litedocx
   "litedocx is a light-weight DOCX format writer library for Clojure."
-  (:require [clojure.xml :as xml])
+  (:require [clojure.data.xml :as xml])
   (:require [bakyeono.litedocx.wpml :as w]) 
   (:use [bakyeono.litedocx.util]))
 

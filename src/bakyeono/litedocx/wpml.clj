@@ -1,14 +1,21 @@
 (ns bakyeono.litedocx.wpml
   "WordProcessingML templates & snippets used in litedocx."
   (:require [clojure.string :as str])
+  (:require [clojure.data.xml :as xml])
   (:use [bakyeono.litedocx.util]))
 
+;;; e -> clojure.data.xml/element
+;;; Since clojure.data.xml/element is used so much,
+;;; use 'node' as an abbreviation of it.
+;
+(def ^:const ^{:private true} node clojure.data.xml/element)
+
+;;; Constants
 (def ^:const ^{:private true} content-types-xml-xmlns
   {:xmlns "http://schemas.openxmlformats.org/package/2006/content-types"})
 
 (def ^:const ^{:private true} relationships-xmlns 
   {:xmlns "http://schemas.openxmlformats.org/package/2006/relationships"})
-
 (def ^:const ^{:private true} doc-props-app-xml-xmlns
   {:xmlns:vt "http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes"
    :xmlns:properties "http://schemas.openxmlformats.org/officeDocument/2006/extended-properties"})
@@ -46,72 +53,56 @@
    :xmlns:w "http://schemas.openxmlformats.org/wordprocessingml/2006/main"})
 
 (def ^:const ^{:private true} default-content-types
-  [{:tag :Default
-    :attrs {:Extension "rels"
-            :ContentType "application/vnd.openxmlformats-package.relationships+xml"}}
-   {:tag :Override
-    :attrs {:ContentType "application/vnd.openxmlformats-officedocument.extended-properties+xml"
-            :PartName "/docProps/app.xml"}}
-   {:tag :Override
-    :attrs {:ContentType "application/vnd.openxmlformats-package.core-properties+xml"
-            :PartName "/docProps/core.xml"}}
-   {:tag :Override
-    :attrs {:ContentType "application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"
-            :PartName "/word/document.xml"}}])
+  [(node :Default {:Extension "rels"
+                   :ContentType "application/vnd.openxmlformats-package.relationships+xml"})
+   (node :Override {:ContentType "application/vnd.openxmlformats-officedocument.extended-properties+xml"
+                    :PartName "/docProps/app.xml"})
+   (node :Override {:ContentType "application/vnd.openxmlformats-package.core-properties+xml"
+                    :PartName "/docProps/core.xml"})
+   (node :Override {:ContentType "application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"
+                    :PartName "/word/document.xml"})])
 
 (def ^:const ^{:private true} default-styles
-  [{:tag :w:style
-    :attrs {:w:type "paragraph" :w:styleId "a" :w:default "true"}
-    :content
-    [{:tag :w:name :attrs {:w:val "Normal"} :content nil}
-     {:tag :w:qFormat :attrs nil :content nil}
-     {:tag :w:pPr :attrs nil :content
-      [{:tag :w:widowControl :attrs {:w:val "false"} :content nil}
-       {:tag :w:wordWrap :attrs {:w:val "false"} :content nil}
-       {:tag :w:autoSpaceDE :attrs {:w:val "false"} :content nil}
-       {:tag :w:autoSpaceDN :attrs {:w:val "false"} :content nil}
-       {:tag :w:jc :attrs {:w:val "both"} :content nil}]}]}
-   {:tag :w:style
-    :attrs {:w:type "character" :w:styleId "a0" :w:default "true"}
-    :content
-    [{:tag :w:name :attrs {:w:val "Default Paragraph Font"} :content nil}
-     {:tag :w:uiPriority :attrs {:w:val "1"} :content nil}
-     {:tag :w:semiHidden :attrs nil :content nil}
-     {:tag :w:unhideWhenUsed :attrs nil :content nil}]}
-   {:tag :w:style
-    :attrs {:w:type "table" :w:styleId "a1" :w:default "true"}
-    :content
-    [{:tag :w:name :attrs {:w:val "Normal Table"} :content nil}
-     {:tag :w:uiPriority :attrs {:w:val "99"} :content nil}
-     {:tag :w:semiHidden :attrs nil :content nil}
-     {:tag :w:unhideWhenUsed :attrs nil :content nil}
-     {:tag :w:qFormat :attrs nil :content nil}
-     {:tag :w:tblPr
-      :attrs nil
-      :content
-      [{:tag :w:tblInd :attrs {:w:w "0" :w:type "dxa"} :content nil}
-       {:tag :w:tblCellMar
-        :attrs nil
-        :content
-        [{:tag :w:top :attrs {:w:w "0" :w:type "dxa"} :content nil}
-         {:tag :w:left :attrs {:w:w "108" :w:type "dxa"} :content nil}
-         {:tag :w:bottom :attrs {:w:w "0" :w:type "dxa"} :content nil}
-         {:tag :w:right :attrs {:w:w "108" :w:type "dxa"} :content nil}]}]}]}
-   {:tag :w:style
-    :attrs {:w:type "numbering" :w:styleId "a2" :w:default "true"}
-    :content
-    [{:tag :w:name :attrs {:w:val "No List"} :content nil}
-     {:tag :w:uiPriority :attrs {:w:val "99"} :content nil}
-     {:tag :w:semiHidden :attrs nil :content nil}
-     {:tag :w:unhideWhenUsed :attrs nil :content nil}]}])
+  [(node :w:style
+         {:w:type "paragraph" :w:styleId "a" :w:default "true"}
+         (node :w:name {:w:val "Normal"})
+         (node :w:qFormat)
+         (node :w:pPr {}
+               (node :w:widowControl {:w:val "false"})
+               (node :w:wordWrap {:w:val "false"})
+               (node :w:autoSpaceDE {:w:val "false"})
+               (node :w:autoSpaceDN {:w:val "false"})
+               (node :w:jc {:w:val "both"})))
+   (node :w:style {:w:type "character" :w:styleId "a0" :w:default "true"}
+         (node :w:name {:w:val "Default Paragraph Font"})
+         (node :w:uiPriority {:w:val "1"})
+         (node :w:semiHidden)
+         (node :w:unhideWhenUsed))
+   (node :w:style {:w:type "table" :w:styleId "a1" :w:default "true"}
+         (node :w:name {:w:val "Normal Table"})
+         (node :w:uiPriority {:w:val "99"})
+         (node :w:semiHidden)
+         (node :w:unhideWhenUsed)
+         (node :w:qFormat)
+         (node :w:tblPr {}
+               (node :w:tblInd {:w:w "0" :w:type "dxa"})
+               (node :w:tblCellMar {}
+                     (node :w:top {:w:w "0" :w:type "dxa"})
+                     (node :w:left {:w:w "108" :w:type "dxa"})
+                     (node :w:bottom {:w:w "0" :w:type "dxa"})
+                     (node :w:right {:w:w "108" :w:type "dxa"}))))
+   (node :w:style {:w:type "numbering" :w:styleId "a2" :w:default "true"}
+         (node :w:name {:w:val "No List"})
+         (node :w:uiPriority {:w:val "99"})
+         (node :w:semiHidden)
+         (node :w:unhideWhenUsed))])
 
-(defn when-v-tag
+(defn when-v-node
   "Returns an XML tag node when the value exists."
   [v tag]
   (cond (nil? v) nil
-        (= "" v) {:tag tag}
-        true {:tag tag
-              :content [(str v)]}))
+        (= "" v) (node tag)
+        true (node tag {} (str v))))
 
 (defn when-v-kv
   "Returns a vector of [k v] when the value exists."
@@ -169,9 +160,8 @@
   "Returns Override XML tag node of given resource information map.
   Called by content-types-xml."
   [{:keys [content-type part-name]}]
-  {:tag :Override
-   :attrs {:ContentType content-type
-           :PartName part-name}})
+  (node :Override {:ContentType content-type
+                   :PartName part-name}))
 
 (defn content-types-xml
   "Creates XML data for [Content_Types].xml file in DOCX package.
@@ -181,10 +171,9 @@
 
   Note that resources should be created by make-resources."
   [resources]
-  {:tag :Types
-   :attrs content-types-xml-xmlns
-   :content (into default-content-types
-                  (map resource-type-override resources))})
+  (node :Types content-types-xml-xmlns
+        default-content-types
+        (map resource-type-override resources)))
 
 (defn doc-props-app-xml
   "Creates XML data for docProps/app.xml file in DOCX pakcage.
@@ -196,34 +185,24 @@
   - (doc-props-app-xml :application \"Microsoft Office Word\" :app-version \"12.0000\")"
   [& {:as options
       :keys [application app-version]}]
-  {:tag :properties:Properties
-   :attrs doc-props-app-xml-xmlns
-   :content (remove-nil
-              (map when-v-tag
-                   [application app-version]
-                   [:properties:Application :properties:AppVersion]))})
+  (node :properties:Properties doc-props-app-xml-xmlns
+        (map when-v-node
+             [application app-version]
+             [:properties:Application :properties:AppVersion])))
 
 (defn rels-rels
   "Creates XML data for _rels/.rels file in DOCX package."
   []
-  {:tag :Relationships
-   :attrs relationships-xmlns
-   :content
-   [{:tag :Relationship
-     :attrs
-     {:Id "rId1"
-      :Type "http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" 
-      :Target "word/document.xml"}}
-    {:tag :Relationship
-     :attrs
-     {:Id "rId2"
-      :Type "http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties"
-      :Target "docProps/core.xml"}}
-    {:tag :Relationship
-     :attrs
-     {:Id "rId3"
-      :Target "docProps/app.xml"
-      :Type "http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties"}}]})
+  (node :Relationships relationships-xmlns
+        (node :Relationship {:Id "rId1"
+                             :Type "http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" 
+                             :Target "word/document.xml"})
+        (node :Relationship {:Id "rId2"
+                             :Type "http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties"
+                             :Target "docProps/core.xml"})
+        (node :Relationship {:Id "rId3"
+                             :Target "docProps/app.xml"
+                             :Type "http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties"})))
 
 (defn doc-props-core-xml
   "Creates XML data for docProps/core.xml file in DOCX pakcage.
@@ -235,36 +214,26 @@
   - (doc-props-core-xml :creator \"Bak Yeon O\" :last-modified-by \"Bak Yeon O\")"
   [& {:as properties
       :keys [title subject creator keywords description last-modified-by]}]
-  {:tag :cp:coreProperties
-   :attrs doc-props-core-xml-xmlns
-   :content (remove-nil
-              (map when-v-tag
-                   [title subject creator keywords description last-modified-by]
-                   [:dc:title :dc:subject :dc:creator :cp:keywords
-                    :dc:description :cp:lastModifiedBy]))})
+  (node :cp:coreProperties doc-props-core-xml-xmlns
+        (map when-v-node
+             [title subject creator keywords description last-modified-by]
+             [:dc:title :dc:subject :dc:creator :cp:keywords
+              :dc:description :cp:lastModifiedBy])))
 
 (defn word-document-xml
   "Creates XML data for word/document.xml file in DOCX pakcage."
   [& body]
-  {:tag :w:document
-   :attrs word-xmlns
-   :content
-   [{:tag :w:body
-     :content 
-     (remove-nil
-       (conj
-         (remove-nil body) 
-         {:tag :w:sectPr
-          :content
-          [{:tag :w:pgSz
-            :attrs {:w:w 11907
-                    :w:h 16839
-                    :w:code 9}}
-           {:tag :w:pgMar
-            :attrs {:w:top 720
-                    :w:right 720
-                    :w:bottom 720
-                    :w:left 720}}]}))}]})
+  (node :w:document word-xmlns
+        (node :w:body {}
+              body
+              (node :w:sectPr {}
+                    (node :w:pgSz {:w:w 11907
+                                   :w:h 16839
+                                   :w:code 9})
+                    (node :w:pgMar {:w:top 720
+                                    :w:right 720
+                                    :w:bottom 720
+                                    :w:left 720})))))
 
 (defn- ppr
   "Creates w:pPr tag node. Called by paragaph-style."
@@ -273,54 +242,42 @@
            space-before space-after space-line
            indent-left indent-right indent-first-line
            mirror-indents?]}]
-  {:tag :w:pPr
-   :content (remove-nil
-              [(when (or space-before space-after space-line)
-                 {:tag :w:spacing
-                  :attrs (make-attrs :w:before space-before
-                                     :w:after space-after
-                                     :w:line space-line
-                                     :w:lineRule "auto")})
-               (when (or indent-left indent-right indent-first-line)
-                 {:tag :w:ind
-                  :attrs (make-attrs :w:left indent-left
-                                     :w:right indent-right
-                                     :w:firstLine indent-first-line)})
-               (when mirror-indents?
-                 {:tag :w:mirrorIndents})
-               (when align
-                 {:tag :w:jc
-                  :attrs {:w:val align}})])})
+  (node :w:pPr {}
+        (when (or space-before space-after space-line)
+          (node :w:spacing (make-attrs :w:before space-before
+                                       :w:after space-after
+                                       :w:line space-line
+                                       :w:lineRule "auto")))
+        (when (or indent-left indent-right indent-first-line)
+          (node :w:ind (make-attrs :w:left indent-left
+                                   :w:right indent-right
+                                   :w:firstLine indent-first-line)))
+        (when mirror-indents?
+          (node :w:mirrorIndents))
+        (when align
+          (node :w:jc {:w:val align}))))
 
 (defn- rpr
   "Creates w:rPr tag node. Called by paragaph-style."
   [{:as options
     :keys [font font-size font-color bold? italic? underline? strike?]}]
-  {:tag :w:rPr
-   :content (remove-nil
-              [(when font
-                 {:tag :w:rFonts
-                  :attrs {:w:ascii font
-                          :w:hAnsi font
-                          :w:eastAsia font}})
-               (when font-size
-                 {:tag :w:sz
-                  :attrs {:w:val font-size}})
-               (when font-color
-                 {:tag :w:color
-                  :attrs {:w:val font-color}})
-               (when bold?
-                 {:tag :w:b
-                  :attrs {:w:val true}})
-               (when italic?
-                 {:tag :w:b
-                  :attrs {:w:val true}})
-               (when underline?
-                 {:tag :w:u
-                  :attrs {:w:val "single"}})
-               (when strike?
-                 {:tag :w:strike
-                  :attrs {:w:val true}})])})
+  (node :w:rPr {}
+        (when font
+          (node :w:rFonts {:w:ascii font
+                           :w:hAnsi font
+                           :w:eastAsia font}))
+        (when font-size
+          (node :w:sz {:w:val font-size}))
+        (when font-color
+          (node :w:color {:w:val font-color}))
+        (when bold?
+          (node :w:b {:w:val true}))
+        (when italic?
+          (node :w:b {:w:val true}))
+        (when underline?
+          (node :w:u {:w:val "single"}))
+        (when strike?
+          (node :w:strike {:w:val true}))))
 
 (defn paragraph-style
   "Creates a w:style tag of paragraph. Returns w:style tag for paragraph style with
@@ -344,46 +301,35 @@
              space-before space-after space-line   
              indent-left indent-right indent-first-line mirror-indents?]}]
   (let [font-style-name (str "character-style-of-" name)]
-    (remove-nil
-      [;; paragraph style
-       {:tag :w:style
-        :attrs {:w:type "paragraph"
-                :w:styleId "normal"
-                :w:customStyle "true"}
-        :content
-        (remove-nil
-          [{:tag :w:name
-            :attrs {:w:val name}}
-           {:tag :w:basedOn
-            :attrs {:w:val "a"}}
-           (when font {:tag :w:link
-                       :attrs {:w:val font-style-name}})
-           {:tag :w:qFormat}
+    [;; paragraph style
+     (node :w:style {:w:type "paragraph"
+                     :w:styleId "normal"
+                     :w:customStyle "true"}
+           (node :w:name {:w:val name})
+           (node :w:basedOn {:w:val "a"})
+           (when font
+             (node :w:link {:w:val font-style-name}))
+           (node :w:qFormat)
            (when (or align
                      space-before space-after space-line
                      indent-left indent-right indent-first-line mirror-indents?)
              (ppr options))
            (when (or font font-size font-color bold? italic? underline?)
-             (rpr options))])}
-       ;; font style of the paragraph style
-       (when font
-         {:tag :w:style
-          :attrs {:w:type "character"
-                  :w:styleId font-style-name
-                  :w:customStyle "true"}
-          :content
-          [{:tag :w:name
-            :attrs {:w:val font-style-name}}
-           {:tag :w:basedOn
-            :attrs {:w:val "a0"}}
-           (rpr options)]})])))
+             (rpr options)))
+     ;; font style of the paragraph style
+     (when font
+       (node :w:style {:w:type "character"
+                       :w:styleId font-style-name
+                       :w:customStyle "true"}
+             (node :w:name {:w:val font-style-name})
+             (node :w:basedOn {:w:val "a0"})
+             (rpr options)))]))
 
 (defn word-styles-xml
   "descripted on: http://officeopenxml.com/WPstyles.php"
   [& styles]
-  {:tag :w:styles
-   :attrs word-xmlns
-   :content (remove-nil (flatten [default-styles styles]))})
+  (node :w:styles word-xmlns
+        (flatten [default-styles styles])))
 
 (defn word-media-resources
   "Creates a vector of resource data map. Each map has :path and :byte-array
@@ -401,10 +347,9 @@
   "Returns Relationship XML tag node of given resource information map.
   Called by word-rels-document-xml-rels."
   [{:keys [id type target]}]
-  {:tag :Relationship
-   :attrs {:Id id
-           :Type type
-           :Target target}})
+  (node :Relationship {:Id id
+                       :Type type
+                       :Target target}))
 
 (defn word-rels-document-xml-rels
   "Creates XML data for word/_rels/document.xml.rels file in DOCX package.
@@ -414,9 +359,8 @@
 
   Note that resources should be created by make-resources."
   [resources]
-  {:tag :Relationships
-   :attrs relationships-xmlns
-   :content (map rels resources)})
+  (node :Relationships relationships-xmlns
+        (map rels resources)))
 
 (defn table
   "Returns XML tag node of table.
@@ -430,25 +374,16 @@
   Examples:
   (table \"table-style1\" :center [964 964 8072] ...)"
   [style h-align widths & body]
-  {:tag :w:tbl
-   :content
-   (remove-nil
-     (into
-       [{:tag :w:tblPr
-         :content
-         [{:tag :w:tblStyle
-           :attrs {:w:val style}}
-          {:tag :w:tblW
-           :attrs {:w:w (reduce + widths)
-                   :w:type "dxa"}}
-          {:tag :w:jc
-           :attrs {:w:val (name h-align)}}]}
-        {:tag :w:tblGrid
-         :content
-         (for [w widths]
-           {:tag :w:gridCol
-            :attrs {:w:gridCol w}})}]
-       body))})
+  (node :w:tbl {}
+        (node :w:tblPr {}
+              (node :w:tblStyle {:w:val style})
+              (node :w:tblW {:w:w (reduce + widths)
+                             :w:type "dxa"})
+              (node :w:jc {:w:val (name h-align)}))
+        (node :w:tblGrid {}
+              (for [w widths]
+                (node :w:gridCol {:w:gridCol w})))
+        body))
 
 (defn tr
   "Returns XML tag node of table.
@@ -456,8 +391,8 @@
   Parameters:
   - & body: content of row (td is expected)"
   [& body]
-  {:tag :w:tr
-   :content (remove-nil body)})
+  (node :w:tr {}
+        body))
 
 (defn td
   "Returns XML tag node of table.
@@ -466,16 +401,11 @@
   - width: width of cell
   - & body: content of cell"
   [width & body]
-  {:tag :w:tc
-   :content
-   (remove-nil
-     (into
-       [{:tag :w:tcPr
-         :content
-         [{:tag :w:tcW
-           :attrs {:w:w width
-                   :w:type "dxa"}}]}]
-       body))})
+  (node :w:tc {}
+        (node :w:tcPr {}
+              (node :w:tcW {:w:w width
+                            :w:type "dxa"}))
+        body))
 
 (defn p
   "Returns XML tag node of paragraph.
@@ -484,25 +414,15 @@
   - style: <string or keyword> style of paragraph
   - text: <string> text in paragraph"
   ([text]
-   {:tag :w:p
-    :content
-    [{:tag :w:r
-      :content
-      [{:tag :w:t
-        :content [text]}]}]})
+   (node :w:p {}
+         (node :w:r {}
+               (node :w:t {}
+                     text))))
   ([style text]
-   {:tag :w:p
-    :content
-    [{:tag :w:pPr
-      :content
-      [{:tag :w:pStyle
-        :attrs {:w:val (name style)}}]}
-     {:tag :w:r
-      :content
-      [{:tag :w:rPr
-        :content
-        [{:tag :w:rFonts
-          :attrs {:w:hint "eastAsia"}}]}
-       {:tag :w:t
-        :content [text]}]}]})) 
+   (node :w:p {}
+         (node :w:pPr {}
+               (node :w:pStyle {:w:val (name style)}))
+         (node :w:r {}
+               (node :w:t {}
+                     text)))))
 

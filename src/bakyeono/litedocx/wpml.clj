@@ -1,15 +1,21 @@
 (ns bakyeono.litedocx.wpml
   "WordProcessingML templates & snippets used in litedocx."
   (:require [clojure.string :as str])
-  (:use [clojure.data.xml :only [element]])
+  (:require [clojure.data.xml :as xml])
   (:use [bakyeono.litedocx.util]))
 
+;;; e -> clojure.data.xml/element
+;;; Since clojure.data.xml/element is used so much,
+;;; use 'node' as an abbreviation of it.
+;
+(def ^:const ^{:private true} node clojure.data.xml/element)
+
+;;; Constants
 (def ^:const ^{:private true} content-types-xml-xmlns
   {:xmlns "http://schemas.openxmlformats.org/package/2006/content-types"})
 
 (def ^:const ^{:private true} relationships-xmlns 
   {:xmlns "http://schemas.openxmlformats.org/package/2006/relationships"})
-
 (def ^:const ^{:private true} doc-props-app-xml-xmlns
   {:xmlns:vt "http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes"
    :xmlns:properties "http://schemas.openxmlformats.org/officeDocument/2006/extended-properties"})
@@ -47,67 +53,66 @@
    :xmlns:w "http://schemas.openxmlformats.org/wordprocessingml/2006/main"})
 
 (def ^:const ^{:private true} default-content-types
-  [(element :Default
-            {:Extension "rels"
-             :ContentType "application/vnd.openxmlformats-package.relationships+xml"})
-   (element :Override
-            {:ContentType "application/vnd.openxmlformats-officedocument.extended-properties+xml"
-             :PartName "/docProps/app.xml"})
-   (element :Override
-            {:ContentType "application/vnd.openxmlformats-package.core-properties+xml"
-             :PartName "/docProps/core.xml"})
-   (element :Override
-            {:ContentType "application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"
-             :PartName "/word/document.xml"})])
+  [(node :Default
+         {:Extension "rels"
+          :ContentType "application/vnd.openxmlformats-package.relationships+xml"})
+   (node :Override
+         {:ContentType "application/vnd.openxmlformats-officedocument.extended-properties+xml"
+          :PartName "/docProps/app.xml"})
+   (node :Override
+         {:ContentType "application/vnd.openxmlformats-package.core-properties+xml"
+          :PartName "/docProps/core.xml"})
+   (node :Override
+         {:ContentType "application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"
+          :PartName "/word/document.xml"})])
 
 (def ^:const ^{:private true} default-styles
-  [(element :w:style
-            {:w:type "paragraph" :w:styleId "a" :w:default "true"}
-            [(element :w:name {:w:val "Normal"})
-             (element :w:qFormat)
-             (element :w:pPr
-                      {}
-                      [(element :w:widowControl {:w:val "false"})
-                       (element :w:wordWrap {:w:val "false"})
-                       (element :w:autoSpaceDE {:w:val "false"})
-                       (element :w:autoSpaceDN {:w:val "false"})
-                       (element :w:jc {:w:val "both"})])])
-   (element :w:style
-            {:w:type "character" :w:styleId "a0" :w:default "true"}
-            [(element :w:name {:w:val "Default Paragraph Font"})
-             (element :w:uiPriority {:w:val "1"})
-             (element :w:semiHidden)
-             (element :w:unhideWhenUsed)])
-   (element :w:style
-            {:w:type "table" :w:styleId "a1" :w:default "true"}
-            [(element :w:name {:w:val "Normal Table"})
-             (element :w:uiPriority {:w:val "99"})
-             (element :w:semiHidden)
-             (element :w:unhideWhenUsed)
-             (element :w:qFormat)
-             (element :w:tblPr
-                      {}
-                      [(element :w:tblInd {:w:w "0" :w:type "dxa"})
-                       (element :w:tblCellMar
-                                {}
-                                [(element :w:top {:w:w "0" :w:type "dxa"})
-                                 (element :w:left {:w:w "108" :w:type "dxa"})
-                                 (element :w:bottom {:w:w "0" :w:type "dxa"})
-                                 (element :w:right {:w:w "108" :w:type "dxa"})])])])
-   (element :w:style
-            {:w:type "numbering" :w:styleId "a2" :w:default "true"}
-            [(element :w:name {:w:val "No List"})
-             (element :w:uiPriority {:w:val "99"})
-             (element :w:semiHidden)
-             (element :w:unhideWhenUsed)])])
+  [(node :w:style
+         {:w:type "paragraph" :w:styleId "a" :w:default "true"}
+         [(node :w:name {:w:val "Normal"})
+          (node :w:qFormat)
+          (node :w:pPr
+                {}
+                [(node :w:widowControl {:w:val "false"})
+                 (node :w:wordWrap {:w:val "false"})
+                 (node :w:autoSpaceDE {:w:val "false"})
+                 (node :w:autoSpaceDN {:w:val "false"})
+                 (node :w:jc {:w:val "both"})])])
+   (node :w:style
+         {:w:type "character" :w:styleId "a0" :w:default "true"}
+         [(node :w:name {:w:val "Default Paragraph Font"})
+          (node :w:uiPriority {:w:val "1"})
+          (node :w:semiHidden)
+          (node :w:unhideWhenUsed)])
+   (node :w:style
+         {:w:type "table" :w:styleId "a1" :w:default "true"}
+         [(node :w:name {:w:val "Normal Table"})
+          (node :w:uiPriority {:w:val "99"})
+          (node :w:semiHidden)
+          (node :w:unhideWhenUsed)
+          (node :w:qFormat)
+          (node :w:tblPr
+                {}
+                [(node :w:tblInd {:w:w "0" :w:type "dxa"})
+                 (node :w:tblCellMar
+                       {}
+                       [(node :w:top {:w:w "0" :w:type "dxa"})
+                        (node :w:left {:w:w "108" :w:type "dxa"})
+                        (node :w:bottom {:w:w "0" :w:type "dxa"})
+                        (node :w:right {:w:w "108" :w:type "dxa"})])])])
+   (node :w:style
+         {:w:type "numbering" :w:styleId "a2" :w:default "true"}
+         [(node :w:name {:w:val "No List"})
+          (node :w:uiPriority {:w:val "99"})
+          (node :w:semiHidden)
+          (node :w:unhideWhenUsed)])])
 
-(defn when-v-tag
+(defn when-v-node
   "Returns an XML tag node when the value exists."
   [v tag]
   (cond (nil? v) nil
-        (= "" v) {:tag tag}
-        true {:tag tag
-              :content [(str v)]}))
+        (= "" v) (node tag)
+        true (node tag {} (str v))))
 
 (defn when-v-kv
   "Returns a vector of [k v] when the value exists."
@@ -195,7 +200,7 @@
   {:tag :properties:Properties
    :attrs doc-props-app-xml-xmlns
    :content (remove-nil
-              (map when-v-tag
+              (map when-v-node
                    [application app-version]
                    [:properties:Application :properties:AppVersion]))})
 
@@ -234,7 +239,7 @@
   {:tag :cp:coreProperties
    :attrs doc-props-core-xml-xmlns
    :content (remove-nil
-              (map when-v-tag
+              (map when-v-node
                    [title subject creator keywords description last-modified-by]
                    [:dc:title :dc:subject :dc:creator :cp:keywords
                     :dc:description :cp:lastModifiedBy]))})

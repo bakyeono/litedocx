@@ -1,6 +1,7 @@
 (ns bakyeono.litedocx.wpml
   "WordProcessingML templates & snippets used in litedocx."
   (:require [clojure.string :as str])
+  (:use [clojure.data.xml :only [element]])
   (:use [bakyeono.litedocx.util]))
 
 (def ^:const ^{:private true} content-types-xml-xmlns
@@ -46,64 +47,59 @@
    :xmlns:w "http://schemas.openxmlformats.org/wordprocessingml/2006/main"})
 
 (def ^:const ^{:private true} default-content-types
-  [{:tag :Default
-    :attrs {:Extension "rels"
-            :ContentType "application/vnd.openxmlformats-package.relationships+xml"}}
-   {:tag :Override
-    :attrs {:ContentType "application/vnd.openxmlformats-officedocument.extended-properties+xml"
-            :PartName "/docProps/app.xml"}}
-   {:tag :Override
-    :attrs {:ContentType "application/vnd.openxmlformats-package.core-properties+xml"
-            :PartName "/docProps/core.xml"}}
-   {:tag :Override
-    :attrs {:ContentType "application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"
-            :PartName "/word/document.xml"}}])
+  [(element :Default
+            {:Extension "rels"
+             :ContentType "application/vnd.openxmlformats-package.relationships+xml"})
+   (element :Override
+            {:ContentType "application/vnd.openxmlformats-officedocument.extended-properties+xml"
+             :PartName "/docProps/app.xml"})
+   (element :Override
+            {:ContentType "application/vnd.openxmlformats-package.core-properties+xml"
+             :PartName "/docProps/core.xml"})
+   (element :Override
+            {:ContentType "application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"
+             :PartName "/word/document.xml"})])
 
 (def ^:const ^{:private true} default-styles
-  [{:tag :w:style
-    :attrs {:w:type "paragraph" :w:styleId "a" :w:default "true"}
-    :content
-    [{:tag :w:name :attrs {:w:val "Normal"} :content nil}
-     {:tag :w:qFormat :attrs nil :content nil}
-     {:tag :w:pPr :attrs nil :content
-      [{:tag :w:widowControl :attrs {:w:val "false"} :content nil}
-       {:tag :w:wordWrap :attrs {:w:val "false"} :content nil}
-       {:tag :w:autoSpaceDE :attrs {:w:val "false"} :content nil}
-       {:tag :w:autoSpaceDN :attrs {:w:val "false"} :content nil}
-       {:tag :w:jc :attrs {:w:val "both"} :content nil}]}]}
-   {:tag :w:style
-    :attrs {:w:type "character" :w:styleId "a0" :w:default "true"}
-    :content
-    [{:tag :w:name :attrs {:w:val "Default Paragraph Font"} :content nil}
-     {:tag :w:uiPriority :attrs {:w:val "1"} :content nil}
-     {:tag :w:semiHidden :attrs nil :content nil}
-     {:tag :w:unhideWhenUsed :attrs nil :content nil}]}
-   {:tag :w:style
-    :attrs {:w:type "table" :w:styleId "a1" :w:default "true"}
-    :content
-    [{:tag :w:name :attrs {:w:val "Normal Table"} :content nil}
-     {:tag :w:uiPriority :attrs {:w:val "99"} :content nil}
-     {:tag :w:semiHidden :attrs nil :content nil}
-     {:tag :w:unhideWhenUsed :attrs nil :content nil}
-     {:tag :w:qFormat :attrs nil :content nil}
-     {:tag :w:tblPr
-      :attrs nil
-      :content
-      [{:tag :w:tblInd :attrs {:w:w "0" :w:type "dxa"} :content nil}
-       {:tag :w:tblCellMar
-        :attrs nil
-        :content
-        [{:tag :w:top :attrs {:w:w "0" :w:type "dxa"} :content nil}
-         {:tag :w:left :attrs {:w:w "108" :w:type "dxa"} :content nil}
-         {:tag :w:bottom :attrs {:w:w "0" :w:type "dxa"} :content nil}
-         {:tag :w:right :attrs {:w:w "108" :w:type "dxa"} :content nil}]}]}]}
-   {:tag :w:style
-    :attrs {:w:type "numbering" :w:styleId "a2" :w:default "true"}
-    :content
-    [{:tag :w:name :attrs {:w:val "No List"} :content nil}
-     {:tag :w:uiPriority :attrs {:w:val "99"} :content nil}
-     {:tag :w:semiHidden :attrs nil :content nil}
-     {:tag :w:unhideWhenUsed :attrs nil :content nil}]}])
+  [(element :w:style
+            {:w:type "paragraph" :w:styleId "a" :w:default "true"}
+            [(element :w:name {:w:val "Normal"})
+             (element :w:qFormat)
+             (element :w:pPr
+                      {}
+                      [(element :w:widowControl {:w:val "false"})
+                       (element :w:wordWrap {:w:val "false"})
+                       (element :w:autoSpaceDE {:w:val "false"})
+                       (element :w:autoSpaceDN {:w:val "false"})
+                       (element :w:jc {:w:val "both"})])])
+   (element :w:style
+            {:w:type "character" :w:styleId "a0" :w:default "true"}
+            [(element :w:name {:w:val "Default Paragraph Font"})
+             (element :w:uiPriority {:w:val "1"})
+             (element :w:semiHidden)
+             (element :w:unhideWhenUsed)])
+   (element :w:style
+            {:w:type "table" :w:styleId "a1" :w:default "true"}
+            [(element :w:name {:w:val "Normal Table"})
+             (element :w:uiPriority {:w:val "99"})
+             (element :w:semiHidden)
+             (element :w:unhideWhenUsed)
+             (element :w:qFormat)
+             (element :w:tblPr
+                      {}
+                      [(element :w:tblInd {:w:w "0" :w:type "dxa"})
+                       (element :w:tblCellMar
+                                {}
+                                [(element :w:top {:w:w "0" :w:type "dxa"})
+                                 (element :w:left {:w:w "108" :w:type "dxa"})
+                                 (element :w:bottom {:w:w "0" :w:type "dxa"})
+                                 (element :w:right {:w:w "108" :w:type "dxa"})])])])
+   (element :w:style
+            {:w:type "numbering" :w:styleId "a2" :w:default "true"}
+            [(element :w:name {:w:val "No List"})
+             (element :w:uiPriority {:w:val "99"})
+             (element :w:semiHidden)
+             (element :w:unhideWhenUsed)])])
 
 (defn when-v-tag
   "Returns an XML tag node when the value exists."

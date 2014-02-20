@@ -499,10 +499,6 @@
         :attrs {:w:val (name style)}}]}
      {:tag :w:r
       :content
-      [{:tag :w:rPr
-        :content
-        [{:tag :w:rFonts
-          :attrs {:w:hint "eastAsia"}}]}
-       {:tag :w:t
+      [{:tag :w:t
         :content [text]}]}]})) 
 

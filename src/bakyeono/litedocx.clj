@@ -13,7 +13,7 @@
   [dst styles resources]
   (let [content-types-xml (w/content-types-xml resources)
         rels-rels (w/rels-rels)
-        doc-props-app-xml (w/doc-props-app-xml :application "docx4j" :app-version 2.7)
+        doc-props-app-xml (w/doc-props-app-xml :application "litedocx" :app-version 1.0)
         doc-props-core-xml (w/doc-props-core-xml)
         word-document-xml (w/word-document-xml
                             (w/table "a1" :center [964 964 8072]

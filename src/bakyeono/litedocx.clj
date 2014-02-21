@@ -20,7 +20,7 @@
                                      (w/tr (w/td 964 (w/p "a" "name"))
                                            (w/td 964 (w/p "a" "age"))
                                            (w/td 8072 (w/p "a" "description"))))
-                            (w/p "a"
+                            (w/p "para1"
                                  "This is a paragraph."))
         word-styles-xml (w/word-styles-xml styles)
         word-rels-document-xml-rels (w/word-rels-document-xml-rels resources)
@@ -38,7 +38,7 @@
   []
   (pack-docx
     "SAMPLE.docx"
-    []
+    [(w/paragraph-style "para1" :font "NanumGothic" :font-color "0000AA" :align "both")]
     (w/make-resources
       ["image/png" "foo.png" (load-byte-array "foo.png")])))
 

@@ -73,31 +73,31 @@
    :xmlns:dc "http://purl.org/dc/elements/1.1/"})
 
 (def ^:const ^{:private true} word-xmlns
-  {:xmlns:a "http://schemas.openxmlformats.org/drawingml/2006/main"
-   :xmlns:c "http://schemas.openxmlformats.org/drawingml/2006/chart"
-   :xmlns:dgm "http://schemas.openxmlformats.org/drawingml/2006/diagram"
-   :xmlns:dsp "http://schemas.microsoft.com/office/drawing/2008/diagram"
-   :xmlns:m "http://schemas.openxmlformats.org/officeDocument/2006/math"
-   :xmlns:ns11 "http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing"
-   :xmlns:ns13 "urn:schemas-microsoft-com:office:excel"
-   :xmlns:ns17 "urn:schemas-microsoft-com:office:powerpoint"
-   :xmlns:ns24 "http://schemas.openxmlformats.org/officeDocument/2006/bibliography"
-   :xmlns:ns25 "http://schemas.openxmlformats.org/drawingml/2006/compatibility"
-   :xmlns:ns26 "http://schemas.openxmlformats.org/drawingml/2006/lockedCanvas"
-   :xmlns:ns6 "http://schemas.openxmlformats.org/schemaLibrary/2006/main"
-   :xmlns:ns8 "http://schemas.openxmlformats.org/drawingml/2006/chartDrawing"
-   :xmlns:o "urn:schemas-microsoft-com:office:office"
-   :xmlns:odc "http://opendope.org/conditions"
-   :xmlns:odgm "http://opendope.org/SmartArt/DataHierarchy"
-   :xmlns:odi "http://opendope.org/components"
-   :xmlns:odq "http://opendope.org/questions"
-   :xmlns:odx "http://opendope.org/xpaths"
-   :xmlns:pic "http://schemas.openxmlformats.org/drawingml/2006/picture"
-   :xmlns:r "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
-   :xmlns:v "urn:schemas-microsoft-com:vml"
-   :xmlns:w "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
-   :xmlns:w10 "urn:schemas-microsoft-com:office:word"
-   :xmlns:wp "http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"})
+  {:xmlns:a xmlns-a
+   :xmlns:c xmlns-c
+   :xmlns:dgm xmlns-dgm
+   :xmlns:dsp xmlns-dsp
+   :xmlns:m xmlns-m
+   :xmlns:ns11 xmlns-ns11
+   :xmlns:ns13 xmlns-ns13
+   :xmlns:ns17 xmlns-ns17
+   :xmlns:ns24 xmlns-ns24
+   :xmlns:ns25 xmlns-ns25
+   :xmlns:ns26 xmlns-ns26
+   :xmlns:ns6 xmlns-ns6
+   :xmlns:ns8 xmlns-ns8
+   :xmlns:o xmlns-o
+   :xmlns:odc xmlns-odc
+   :xmlns:odgm xmlns-odgm
+   :xmlns:odi xmlns-odi
+   :xmlns:odq xmlns-odq
+   :xmlns:odx xmlns-odx
+   :xmlns:pic xmlns-pic
+   :xmlns:r xmlns-r
+   :xmlns:v xmlns-v
+   :xmlns:w xmlns-w
+   :xmlns:w10 xmlns-w10
+   :xmlns:wp xmlns-wp})
 
 (def ^:const ^{:private true} default-content-types
   [(node :Default {:Extension "rels"

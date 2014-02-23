@@ -4,6 +4,34 @@
   (:require [clojure.data.xml :as xml])
   (:use [bakyeono.litedocx.util]))
 
+;;; OOXML Namespaces
+(def ^:const ^{:private true} xmlns-a "http://schemas.openxmlformats.org/drawingml/2006/main")
+(def ^:const ^{:private true} xmlns-bibliography "http://schemas.openxmlformats.org/officeDocument/2006/bibliography")
+(def ^:const ^{:private true} xmlns-cdr "http://schemas.openxmlformats.org/drawingml/2006/chartDrawing")
+(def ^:const ^{:private true} xmlns-characteristics "http://schemas.openxmlformats.org/officeDocument/2006/characteristics")
+(def ^:const ^{:private true} xmlns-custom-properties "http://schemas.openxmlformats.org/officeDocument/2006/custom-properties")
+(def ^:const ^{:private true} xmlns-customXml "http://schemas.openxmlformats.org/officeDocument/2006/customXml")
+(def ^:const ^{:private true} xmlns-docPropsVTypes "http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes")
+(def ^:const ^{:private true} xmlns-draw-chart "http://schemas.openxmlformats.org/drawingml/2006/chart")
+(def ^:const ^{:private true} xmlns-draw-compat "http://schemas.openxmlformats.org/drawingml/2006/compatibility")
+(def ^:const ^{:private true} xmlns-draw-diag "http://schemas.openxmlformats.org/drawingml/2006/diagram")
+(def ^:const ^{:private true} xmlns-draw-lc "http://schemas.openxmlformats.org/drawingml/2006/lockedCanvas")
+(def ^:const ^{:private true} xmlns-draw-pic "http://schemas.openxmlformats.org/drawingml/2006/picture")
+(def ^:const ^{:private true} xmlns-draw-ssdraw "http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing")
+(def ^:const ^{:private true} xmlns-extended-properties "http://schemas.openxmlformats.org/officeDocument/2006/extended-properties")
+(def ^:const ^{:private true} xmlns-m "http://schemas.openxmlformats.org/officeDocument/2006/math")
+(def ^:const ^{:private true} xmlns-o "urn:schemas-microsoft-com:office:office")
+(def ^:const ^{:private true} xmlns-p "http://schemas.openxmlformats.org/presentationml/2006/main")
+(def ^:const ^{:private true} xmlns-ppt "urn:schemas-microsoft-com:office:powerpoint")
+(def ^:const ^{:private true} xmlns-r "http://schemas.openxmlformats.org/officeDocument/2006/relationships")
+(def ^:const ^{:private true} xmlns-sl "http://schemas.openxmlformats.org/schemaLibrary/2006/main")
+(def ^:const ^{:private true} xmlns-ssml "http://schemas.openxmlformats.org/spreadsheetml/2006/main")
+(def ^:const ^{:private true} xmlns-v "urn:schemas-microsoft-com:vml")
+(def ^:const ^{:private true} xmlns-w "http://schemas.openxmlformats.org/wordprocessingml/2006/main")
+(def ^:const ^{:private true} xmlns-wp "http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing")
+(def ^:const ^{:private true} xmlns-wvml "urn:schemas-microsoft-com:office:word")
+(def ^:const ^{:private true} xmlns-x "urn:schemas-microsoft-com:office:excel")
+
 ;;; e -> clojure.data.xml/element
 ;;; Since clojure.data.xml/element is used so much,
 ;;; use 'node' as an abbreviation of it.

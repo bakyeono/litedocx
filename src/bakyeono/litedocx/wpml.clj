@@ -426,3 +426,74 @@
                (node :w:t {}
                      text)))))
 
+(defn img
+  "Returns XML tag node of image.
+  
+  Parameters:
+  ..."
+  [id name desc extent-x extent-y]
+  (node :w:p {}
+        (node :w:r {}
+              (node :w:drawing {}
+                    ;; Distance from Text on ...
+                    (node :wp:inline {:distT 0 ; top edge
+                                      :distB 0 ; bottom edge
+                                      :distL 0 ; left edge
+                                      :distR 0}) ; right edge
+                    ;; Extent ...
+                    (node :wp:extent {:cx extent-x
+                                      :cy extent-y})
+                    ;; Effect Extent ...
+                    (node :wp:effectExtent {:t 0 ; top
+                                            :b 0 ; bottom
+                                            :l 0 ; left
+                                            :r 0}) ; right 
+                    ;; Drawing Object Non-Visual Properties
+                    (node :wp:docPr {:id id ; Unique ID
+                                     :name name ; Name
+                                     :descr desc}) ; Alternative text for Object 
+                    ;; Common DrawingML Non-Visual Properties
+                    (node :wp:cNvGraphicFramePr {}
+                          ;; Graphic Frame Locks
+                          (node :a:graphicFrameLocks {:noSelect false
+                                                      :noMove false
+                                                      :noResize false
+                                                      :noChangeAspect true}))
+                    ;; Graphic Object
+                    (node :a:graphic {}
+                          ;; Graphic Object Data
+                          (node :a:graphicData {:uri "http://schemas.openxmlformats.org/drawingml/2006/picture"}
+                                ;; Picture
+                                (node :pic:pic {}
+                                      ;; Non-Visual Picture Properties
+                                      (node :pic:nvPicPr {}
+                                            ;; Non-Visual Drawing Properties
+                                            (node :pic:cNvPr {:id id ; Unique ID
+                                                              :name name ; Name
+                                                              :descr desc}) ; Description
+                                            ;; Non-Visual Picture Drawing Properties
+                                            (node :pic:cNvPicPr))
+                                      ;; Picture Fill
+                                      (node :pic:blipFill {}
+                                            ;; Blip
+                                            (node :a:blip {:r:embed id ; Embedded Picture Reference
+                                                           :r:link ""}) ; Linked Picture Reference
+                                            ;; Stretch
+                                            (node :a:stretch {}
+                                                  ;; Fill Rectangle
+                                                  (node :a:fillRect)))
+                                      ;; Shape Properties
+                                      (node :pic:spPr {}
+                                            ;; 2D Transform for Individual Objects
+                                            (node :a:xfrm {}
+                                                  ;; Offset
+                                                  (node :a:off {:x 0
+                                                                :y 0})
+                                                  ;; Extents
+                                                  (node :ext {:x extent-x
+                                                              :y extent-y}))
+                                            ;; Preset Geometry
+                                            (node :a:prstGeom {:prst "rect"} ; Preset Shape 
+                                                  ;; List of Shape Adjust Values
+                                                  (node :a:avLst))))))))))
+

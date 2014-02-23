@@ -7,6 +7,10 @@
 (defrecord Resource [id type content-type part-name])
 
 ;;; DOCX package
+(defn check-styles
+  [styles document]
+  )
+
 (defn pack-docx
   "Creates DOCX package.
   Resources are created by w/make-resources."

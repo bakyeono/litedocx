@@ -50,3 +50,9 @@
   []
   (pack-docx "SAMPLE2.docx" [] []))
 
+(defn sample-pack3
+  []
+  (pack-docx
+    "SAMPLE3.docx"
+    [(w/paragraph-style "para1" :font "NanumGothic" :font-color "0000AA" :align "both")]
+    (w/make-resources)))

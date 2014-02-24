@@ -10,8 +10,11 @@
 (defconst- xmlns-c "http://schemas.openxmlformats.org/drawingml/2006/chart")
 (defconst- xmlns-cdr "http://schemas.openxmlformats.org/drawingml/2006/chartDrawing")
 (defconst- xmlns-characteristics "http://schemas.openxmlformats.org/officeDocument/2006/characteristics")
+(defconst- xmlns-core-properties "http://schemas.openxmlformats.org/package/2006/metadata/core-properties")
 (defconst- xmlns-custom-properties "http://schemas.openxmlformats.org/officeDocument/2006/custom-properties")
 (defconst- xmlns-customXml "http://schemas.openxmlformats.org/officeDocument/2006/customXml")
+(defconst- xmlns-dc "http://purl.org/dc/elements/1.1/")
+(defconst- xmlns-dcterms "http://purl.org/dc/terms/")
 (defconst- xmlns-dgm "http://schemas.openxmlformats.org/drawingml/2006/diagram")
 (defconst- xmlns-docPropsVTypes "http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes")
 (defconst- xmlns-draw-chart "http://schemas.openxmlformats.org/drawingml/2006/chart")
@@ -38,18 +41,20 @@
 (defconst- xmlns-odq "http://opendope.org/questions")
 (defconst- xmlns-odx "http://opendope.org/xpaths")
 (defconst- xmlns-p "http://schemas.openxmlformats.org/presentationml/2006/main")
+(defconst- xmlns-pack-content-types "http://schemas.openxmlformats.org/package/2006/content-types")
+(defconst- xmlns-pack-r "http://schemas.openxmlformats.org/package/2006/relationships")
 (defconst- xmlns-pic "http://schemas.openxmlformats.org/drawingml/2006/picture")
 (defconst- xmlns-ppt "urn:schemas-microsoft-com:office:powerpoint")
 (defconst- xmlns-r "http://schemas.openxmlformats.org/officeDocument/2006/relationships")
 (defconst- xmlns-sl "http://schemas.openxmlformats.org/schemaLibrary/2006/main")
 (defconst- xmlns-ssml "http://schemas.openxmlformats.org/spreadsheetml/2006/main")
 (defconst- xmlns-v "urn:schemas-microsoft-com:vml")
+(defconst- xmlns-vt "http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes")
 (defconst- xmlns-w "http://schemas.openxmlformats.org/wordprocessingml/2006/main")
 (defconst- xmlns-w10 "urn:schemas-microsoft-com:office:word")
 (defconst- xmlns-wp "http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing")
 (defconst- xmlns-wvml "urn:schemas-microsoft-com:office:word")
 (defconst- xmlns-x "urn:schemas-microsoft-com:office:excel")
-
 
 ;;; e -> clojure.data.xml/element
 ;;; Since clojure.data.xml/element is used so much,
@@ -58,18 +63,19 @@
 
 ;;; Constants
 (defconst- content-types-xml-xmlns
-  {:xmlns "http://schemas.openxmlformats.org/package/2006/content-types"})
+  {:xmlns xmlns-pack-content-types})
 
 (defconst- relationships-xmlns 
-  {:xmlns "http://schemas.openxmlformats.org/package/2006/relationships"})
+  {:xmlns xmlns-pack-r})
+
 (defconst- doc-props-app-xml-xmlns
-  {:xmlns:vt "http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes"
-   :xmlns:properties "http://schemas.openxmlformats.org/officeDocument/2006/extended-properties"})
+  {:xmlns:vt xmlns-vt
+   :xmlns:properties xmlns-extended-properties})
 
 (defconst- doc-props-core-xml-xmlns
-  {:xmlns:cp "http://schemas.openxmlformats.org/package/2006/metadata/core-properties"
-   :xmlns:dcterms "http://purl.org/dc/terms/"
-   :xmlns:dc "http://purl.org/dc/elements/1.1/"})
+  {:xmlns:cp xmlns-core-properties
+   :xmlns:dc xmlns-dc
+   :xmlns:dcterms xmlns-dcterms})
 
 (defconst- word-xmlns
   {:xmlns:a xmlns-a
@@ -167,14 +173,13 @@
 (defconst- styles-xml-resource
   {:id "rId1"
    :part-name "/word/styles.xml"
-   :type "http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles"
+   :type (str xmlns-r "/styles")
    :content-type "application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"
    :target "styles.xml"})
 
 (defn- content-type->relationship-type
   [content-type]
-  (str "http://schemas.openxmlformats.org/officeDocument/2006/relationships/"
-       (re-find #"[\w]*" content-type)))
+  (str xmlns-r "/" (re-find #"[\w]*" content-type)))
 
 (defn- make-resource
   "Creates an external resource information map for DOCX pakcage.

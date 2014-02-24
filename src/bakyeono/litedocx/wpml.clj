@@ -115,8 +115,7 @@
                     :PartName "/word/document.xml"})])
 
 (defconst- default-styles
-  [(node :w:style
-         {:w:type "paragraph" :w:styleId "a" :w:default "true"}
+  [(node :w:style {:w:type "paragraph" :w:styleId "a" :w:default "true"}
          (node :w:name {:w:val "Normal"})
          (node :w:qFormat)
          (node :w:pPr {}

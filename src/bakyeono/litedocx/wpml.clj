@@ -290,7 +290,7 @@
                                     :w:right 720
                                     :w:bottom 720
                                     :w:left 720
-                                    :w:herader 0
+                                    :w:header 0
                                     :w:footer 0})))))
 
 (defn- ppr

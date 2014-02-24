@@ -303,7 +303,7 @@
            mirror-indents?]}]
   ;; Paragraph Properties
   (node :w:pPr {}
-        (when (word-wrap?)
+        (when word-wrap?
           ;; Allow Line Breaking at Character Level
           (node :w:wordWrap {:w:val true}))
         (when (or space-before space-after space-line)

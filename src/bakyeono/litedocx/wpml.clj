@@ -54,7 +54,6 @@
 ;;; e -> clojure.data.xml/element
 ;;; Since clojure.data.xml/element is used so much,
 ;;; use 'node' as an abbreviation of it.
-;
 (defconst- node clojure.data.xml/element)
 
 ;;; Constants

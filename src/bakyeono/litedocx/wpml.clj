@@ -357,12 +357,11 @@
           (node :w:strike {:w:val true}))))
 
 (defn paragraph-style
-  "Creates a w:style tag of paragraph. Returns w:style tag for paragraph style with
-  w:style tag for the font, as a vector containing both of them.
-  Needed for word-styles-xml.
+  "Returns w:style tag for paragraph style with w:style tag for the font,
+  as a vector containing both of them.
 
   Parameters:
-  - name: <string> What others call this style. Also used as style-id. Must be unique.
+  - name: <string> Used as index. Must be unique.
   - & options: option, value, ...
 
   Examples:
@@ -381,7 +380,7 @@
   (let [font-style-name (str "character-style-of-" name)]
     [;; Paragraph Style Definition
      (node :w:style {:w:type "paragraph" ; Style Type
-                     :w:styleId "normal" ; Style ID
+                     :w:styleId name ; Style ID
                      :w:customStyle "true"} ; User-Defined Style
            (node :w:name {:w:val name}) ; Primary Style Name
            (node :w:basedOn {:w:val "a"}) ; Parent Style ID

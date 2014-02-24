@@ -431,7 +431,7 @@
                      :w:styleId name ; Style ID
                      :w:customStyle "true"} ; User-Defined Style
            (node :w:name {:w:val name}) ; Primary Style Name
-           (node :w:basedOn {:w:val "a"}) ; Parent Style ID
+           (node :w:basedOn {:w:val "a1"}) ; Parent Style ID
            (when font
              (node :w:link {:w:val font-style-name})) ; Linked Style Reference
            (node :w:qFormat) ; Primary Style

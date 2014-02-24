@@ -5,74 +5,74 @@
   (:use [bakyeono.litedocx.util]))
 
 ;;; OOXML Namespaces
-(def ^:const ^{:private true} xmlns-a "http://schemas.openxmlformats.org/drawingml/2006/main")
-(def ^:const ^{:private true} xmlns-bibliography "http://schemas.openxmlformats.org/officeDocument/2006/bibliography")
-(def ^:const ^{:private true} xmlns-c "http://schemas.openxmlformats.org/drawingml/2006/chart")
-(def ^:const ^{:private true} xmlns-cdr "http://schemas.openxmlformats.org/drawingml/2006/chartDrawing")
-(def ^:const ^{:private true} xmlns-characteristics "http://schemas.openxmlformats.org/officeDocument/2006/characteristics")
-(def ^:const ^{:private true} xmlns-custom-properties "http://schemas.openxmlformats.org/officeDocument/2006/custom-properties")
-(def ^:const ^{:private true} xmlns-customXml "http://schemas.openxmlformats.org/officeDocument/2006/customXml")
-(def ^:const ^{:private true} xmlns-dgm "http://schemas.openxmlformats.org/drawingml/2006/diagram")
-(def ^:const ^{:private true} xmlns-docPropsVTypes "http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes")
-(def ^:const ^{:private true} xmlns-draw-chart "http://schemas.openxmlformats.org/drawingml/2006/chart")
-(def ^:const ^{:private true} xmlns-draw-compat "http://schemas.openxmlformats.org/drawingml/2006/compatibility")
-(def ^:const ^{:private true} xmlns-draw-diag "http://schemas.openxmlformats.org/drawingml/2006/diagram")
-(def ^:const ^{:private true} xmlns-draw-lc "http://schemas.openxmlformats.org/drawingml/2006/lockedCanvas")
-(def ^:const ^{:private true} xmlns-draw-pic "http://schemas.openxmlformats.org/drawingml/2006/picture")
-(def ^:const ^{:private true} xmlns-draw-ssdraw "http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing")
-(def ^:const ^{:private true} xmlns-dsp "http://schemas.microsoft.com/office/drawing/2008/diagram")
-(def ^:const ^{:private true} xmlns-extended-properties "http://schemas.openxmlformats.org/officeDocument/2006/extended-properties")
-(def ^:const ^{:private true} xmlns-m "http://schemas.openxmlformats.org/officeDocument/2006/math")
-(def ^:const ^{:private true} xmlns-ns11 "http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing")
-(def ^:const ^{:private true} xmlns-ns13 "urn:schemas-microsoft-com:office:excel")
-(def ^:const ^{:private true} xmlns-ns17 "urn:schemas-microsoft-com:office:powerpoint")
-(def ^:const ^{:private true} xmlns-ns24 "http://schemas.openxmlformats.org/officeDocument/2006/bibliography")
-(def ^:const ^{:private true} xmlns-ns25 "http://schemas.openxmlformats.org/drawingml/2006/compatibility")
-(def ^:const ^{:private true} xmlns-ns26 "http://schemas.openxmlformats.org/drawingml/2006/lockedCanvas")
-(def ^:const ^{:private true} xmlns-ns6 "http://schemas.openxmlformats.org/schemaLibrary/2006/main")
-(def ^:const ^{:private true} xmlns-ns8 "http://schemas.openxmlformats.org/drawingml/2006/chartDrawing")
-(def ^:const ^{:private true} xmlns-o "urn:schemas-microsoft-com:office:office")
-(def ^:const ^{:private true} xmlns-odc "http://opendope.org/conditions")
-(def ^:const ^{:private true} xmlns-odgm "http://opendope.org/SmartArt/DataHierarchy")
-(def ^:const ^{:private true} xmlns-odi "http://opendope.org/components")
-(def ^:const ^{:private true} xmlns-odq "http://opendope.org/questions")
-(def ^:const ^{:private true} xmlns-odx "http://opendope.org/xpaths")
-(def ^:const ^{:private true} xmlns-p "http://schemas.openxmlformats.org/presentationml/2006/main")
-(def ^:const ^{:private true} xmlns-pic "http://schemas.openxmlformats.org/drawingml/2006/picture")
-(def ^:const ^{:private true} xmlns-ppt "urn:schemas-microsoft-com:office:powerpoint")
-(def ^:const ^{:private true} xmlns-r "http://schemas.openxmlformats.org/officeDocument/2006/relationships")
-(def ^:const ^{:private true} xmlns-sl "http://schemas.openxmlformats.org/schemaLibrary/2006/main")
-(def ^:const ^{:private true} xmlns-ssml "http://schemas.openxmlformats.org/spreadsheetml/2006/main")
-(def ^:const ^{:private true} xmlns-v "urn:schemas-microsoft-com:vml")
-(def ^:const ^{:private true} xmlns-w "http://schemas.openxmlformats.org/wordprocessingml/2006/main")
-(def ^:const ^{:private true} xmlns-w10 "urn:schemas-microsoft-com:office:word")
-(def ^:const ^{:private true} xmlns-wp "http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing")
-(def ^:const ^{:private true} xmlns-wvml "urn:schemas-microsoft-com:office:word")
-(def ^:const ^{:private true} xmlns-x "urn:schemas-microsoft-com:office:excel")
+(defconst- xmlns-a "http://schemas.openxmlformats.org/drawingml/2006/main")
+(defconst- xmlns-bibliography "http://schemas.openxmlformats.org/officeDocument/2006/bibliography")
+(defconst- xmlns-c "http://schemas.openxmlformats.org/drawingml/2006/chart")
+(defconst- xmlns-cdr "http://schemas.openxmlformats.org/drawingml/2006/chartDrawing")
+(defconst- xmlns-characteristics "http://schemas.openxmlformats.org/officeDocument/2006/characteristics")
+(defconst- xmlns-custom-properties "http://schemas.openxmlformats.org/officeDocument/2006/custom-properties")
+(defconst- xmlns-customXml "http://schemas.openxmlformats.org/officeDocument/2006/customXml")
+(defconst- xmlns-dgm "http://schemas.openxmlformats.org/drawingml/2006/diagram")
+(defconst- xmlns-docPropsVTypes "http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes")
+(defconst- xmlns-draw-chart "http://schemas.openxmlformats.org/drawingml/2006/chart")
+(defconst- xmlns-draw-compat "http://schemas.openxmlformats.org/drawingml/2006/compatibility")
+(defconst- xmlns-draw-diag "http://schemas.openxmlformats.org/drawingml/2006/diagram")
+(defconst- xmlns-draw-lc "http://schemas.openxmlformats.org/drawingml/2006/lockedCanvas")
+(defconst- xmlns-draw-pic "http://schemas.openxmlformats.org/drawingml/2006/picture")
+(defconst- xmlns-draw-ssdraw "http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing")
+(defconst- xmlns-dsp "http://schemas.microsoft.com/office/drawing/2008/diagram")
+(defconst- xmlns-extended-properties "http://schemas.openxmlformats.org/officeDocument/2006/extended-properties")
+(defconst- xmlns-m "http://schemas.openxmlformats.org/officeDocument/2006/math")
+(defconst- xmlns-ns11 "http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing")
+(defconst- xmlns-ns13 "urn:schemas-microsoft-com:office:excel")
+(defconst- xmlns-ns17 "urn:schemas-microsoft-com:office:powerpoint")
+(defconst- xmlns-ns24 "http://schemas.openxmlformats.org/officeDocument/2006/bibliography")
+(defconst- xmlns-ns25 "http://schemas.openxmlformats.org/drawingml/2006/compatibility")
+(defconst- xmlns-ns26 "http://schemas.openxmlformats.org/drawingml/2006/lockedCanvas")
+(defconst- xmlns-ns6 "http://schemas.openxmlformats.org/schemaLibrary/2006/main")
+(defconst- xmlns-ns8 "http://schemas.openxmlformats.org/drawingml/2006/chartDrawing")
+(defconst- xmlns-o "urn:schemas-microsoft-com:office:office")
+(defconst- xmlns-odc "http://opendope.org/conditions")
+(defconst- xmlns-odgm "http://opendope.org/SmartArt/DataHierarchy")
+(defconst- xmlns-odi "http://opendope.org/components")
+(defconst- xmlns-odq "http://opendope.org/questions")
+(defconst- xmlns-odx "http://opendope.org/xpaths")
+(defconst- xmlns-p "http://schemas.openxmlformats.org/presentationml/2006/main")
+(defconst- xmlns-pic "http://schemas.openxmlformats.org/drawingml/2006/picture")
+(defconst- xmlns-ppt "urn:schemas-microsoft-com:office:powerpoint")
+(defconst- xmlns-r "http://schemas.openxmlformats.org/officeDocument/2006/relationships")
+(defconst- xmlns-sl "http://schemas.openxmlformats.org/schemaLibrary/2006/main")
+(defconst- xmlns-ssml "http://schemas.openxmlformats.org/spreadsheetml/2006/main")
+(defconst- xmlns-v "urn:schemas-microsoft-com:vml")
+(defconst- xmlns-w "http://schemas.openxmlformats.org/wordprocessingml/2006/main")
+(defconst- xmlns-w10 "urn:schemas-microsoft-com:office:word")
+(defconst- xmlns-wp "http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing")
+(defconst- xmlns-wvml "urn:schemas-microsoft-com:office:word")
+(defconst- xmlns-x "urn:schemas-microsoft-com:office:excel")
 
 
 ;;; e -> clojure.data.xml/element
 ;;; Since clojure.data.xml/element is used so much,
 ;;; use 'node' as an abbreviation of it.
 ;
-(def ^:const ^{:private true} node clojure.data.xml/element)
+(defconst- node clojure.data.xml/element)
 
 ;;; Constants
-(def ^:const ^{:private true} content-types-xml-xmlns
+(defconst- content-types-xml-xmlns
   {:xmlns "http://schemas.openxmlformats.org/package/2006/content-types"})
 
-(def ^:const ^{:private true} relationships-xmlns 
+(defconst- relationships-xmlns 
   {:xmlns "http://schemas.openxmlformats.org/package/2006/relationships"})
-(def ^:const ^{:private true} doc-props-app-xml-xmlns
+(defconst- doc-props-app-xml-xmlns
   {:xmlns:vt "http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes"
    :xmlns:properties "http://schemas.openxmlformats.org/officeDocument/2006/extended-properties"})
 
-(def ^:const ^{:private true} doc-props-core-xml-xmlns
+(defconst- doc-props-core-xml-xmlns
   {:xmlns:cp "http://schemas.openxmlformats.org/package/2006/metadata/core-properties"
    :xmlns:dcterms "http://purl.org/dc/terms/"
    :xmlns:dc "http://purl.org/dc/elements/1.1/"})
 
-(def ^:const ^{:private true} word-xmlns
+(defconst- word-xmlns
   {:xmlns:a xmlns-a
    :xmlns:c xmlns-c
    :xmlns:dgm xmlns-dgm
@@ -99,7 +99,7 @@
    :xmlns:w10 xmlns-w10
    :xmlns:wp xmlns-wp})
 
-(def ^:const ^{:private true} default-content-types
+(defconst- default-content-types
   [(node :Default {:Extension "rels"
                    :ContentType "application/vnd.openxmlformats-package.relationships+xml"})
    (node :Override {:ContentType "application/vnd.openxmlformats-officedocument.extended-properties+xml"
@@ -109,7 +109,7 @@
    (node :Override {:ContentType "application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"
                     :PartName "/word/document.xml"})])
 
-(def ^:const ^{:private true} default-styles
+(defconst- default-styles
   [(node :w:style
          {:w:type "paragraph" :w:styleId "a" :w:default "true"}
          (node :w:name {:w:val "Normal"})
@@ -165,7 +165,7 @@
           (for [[k v] (partition 2 kvs)]
             (when-v-kv v k)))))
 
-(def ^:const ^{:private true} styles-xml-resource
+(defconst- styles-xml-resource
   {:id "rId1"
    :part-name "/word/styles.xml"
    :type "http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles"

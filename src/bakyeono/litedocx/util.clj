@@ -8,6 +8,12 @@
   (:require [clojure.java.io :as io])
   (:require [clojure.data.xml :as xml]))
 
+;;; def~
+(defmacro defconst-
+  [symbol init]
+  `(def ^:const ^{:private true}
+     ~symbol ~init))
+
 ;;; Collection
 (defn mapstr
   "Returns the result of applying str to the result of applying map

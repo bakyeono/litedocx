@@ -296,12 +296,16 @@
 (defn- ppr
   "Creates w:pPr tag node. Called by paragaph-style."
   [{:as options
-    :keys [align
+    :keys [word-wrap?
+           align
            space-before space-after space-line
            indent-left indent-right indent-first-line
            mirror-indents?]}]
   ;; Paragraph Properties
   (node :w:pPr {}
+        (when (word-wrap?)
+          ;; Allow Line Breaking at Character Level
+          (node :w:wordWrap {:w:val true}))
         (when (or space-before space-after space-line)
           ;; Spacing Between Lines and Above/Below Paragraph
           (node :w:spacing (make-attrs :w:before space-before ; Spacing Above Paragraph
@@ -370,6 +374,7 @@
    & {:as options  
       :keys [font font-size font-color
              bold? italics? underline? strike?
+             word-wrap?
              align
              space-before space-after space-line   
              indent-left indent-right indent-first-line mirror-indents?]}]
@@ -383,7 +388,7 @@
            (when font
              (node :w:link {:w:val font-style-name})) ; Linked Style Reference
            (node :w:qFormat) ; Primary Style
-           (when (or align
+           (when (or word-wrap? align
                      space-before space-after space-line
                      indent-left indent-right indent-first-line mirror-indents?)
              (ppr options))

@@ -11,8 +11,12 @@
 ;;; def~
 (defmacro defconst-
   [symbol init]
-  `(def ^:const ^{:private true}
-     ~symbol ~init))
+  `(def
+    ~(with-meta symbol
+       (assoc (meta symbol)
+        :const true
+        :private true))
+    ~init))
 
 ;;; Collection
 (defn mapstr

@@ -273,17 +273,25 @@
 (defn word-document-xml
   "Creates XML data for word/document.xml file in DOCX pakcage."
   [& body]
+  ;; Document
   (node :w:document word-xmlns
+        ;; w:body
         (node :w:body {}
               body
+              ;; Document Final Section Properties
               (node :w:sectPr {}
-                    (node :w:pgSz {:w:w 11907
-                                   :w:h 16839
-                                   :w:code 9})
+                    ;; Page Size
+                    (node :w:pgSz {:w:w 11907 ; Page Width
+                                   :w:h 16839 ; Page Height
+                                   :w:orient "portrait" ; Page Orientation
+                                   :w:code 9}) ; Printer Paper Code
+                    ;; Page Margins
                     (node :w:pgMar {:w:top 720
                                     :w:right 720
                                     :w:bottom 720
-                                    :w:left 720})))))
+                                    :w:left 720
+                                    :w:herader 0
+                                    :w:footer 0})))))
 
 (defn- ppr
   "Creates w:pPr tag node. Called by paragaph-style."
@@ -292,41 +300,56 @@
            space-before space-after space-line
            indent-left indent-right indent-first-line
            mirror-indents?]}]
+  ;; Paragraph Properties
   (node :w:pPr {}
         (when (or space-before space-after space-line)
-          (node :w:spacing (make-attrs :w:before space-before
-                                       :w:after space-after
-                                       :w:line space-line
-                                       :w:lineRule "auto")))
+          ;; Spacing Between Lines and Above/Below Paragraph
+          (node :w:spacing (make-attrs :w:before space-before ; Spacing Above Paragraph
+                                       :w:after space-after ; Spacing Below Paragraph
+                                       :w:line space-line ; Spacing Between Lines in Paragraph
+                                       :w:lineRule "auto"))) ; Type of Spacing Between Lines
         (when (or indent-left indent-right indent-first-line)
-          (node :w:ind (make-attrs :w:left indent-left
-                                   :w:right indent-right
-                                   :w:firstLine indent-first-line)))
+          ;; Paragraph Indentation
+          (node :w:ind (make-attrs :w:left indent-left ; Left Indentation
+                                   :w:right indent-right ; Right Indentation
+                                   :w:firstLine indent-first-line))) ; Additional First Line Indentation
         (when mirror-indents?
+          ;; Use Left/Right Indents as Inside/Outside Indents
           (node :w:mirrorIndents))
         (when align
+          ;; Paragraph Alignment
           (node :w:jc {:w:val align}))))
 
 (defn- rpr
   "Creates w:rPr tag node. Called by paragaph-style."
   [{:as options
-    :keys [font font-size font-color bold? italic? underline? strike?]}]
+    :keys [font font-size font-color bold? italics? underline? strike?]}]
+  ;; Run Properties
   (node :w:rPr {}
         (when font
-          (node :w:rFonts {:w:ascii font
-                           :w:hAnsi font
-                           :w:eastAsia font}))
+          ;; Run Fonts
+          (node :w:rFonts {:w:hint "default" ; Font Type Hint: default, eastAsia, cs
+                           :w:ascii font ; ASCII Font
+                           :w:hAnsi font ; High ASCII Font
+                           :w:eastAsia font ; East Asian Font
+                           :w:cs font})) ; Complex Script Font
         (when font-size
+          ;; Font Size
           (node :w:sz {:w:val font-size}))
         (when font-color
+          ;; Run Content Color
           (node :w:color {:w:val font-color}))
         (when bold?
+          ;; Bold
           (node :w:b {:w:val true}))
-        (when italic?
-          (node :w:b {:w:val true}))
+        (when italics?
+          ;; Italics
+          (node :w:i {:w:val true}))
         (when underline?
-          (node :w:u {:w:val "single"}))
+          ;; Underline
+          (node :w:u {:w:val "single"})) ; Underline Style
         (when strike?
+          ;; Single Strikethrough
           (node :w:strike {:w:val true}))))
 
 (defn paragraph-style
@@ -351,33 +374,34 @@
              space-before space-after space-line   
              indent-left indent-right indent-first-line mirror-indents?]}]
   (let [font-style-name (str "character-style-of-" name)]
-    [;; paragraph style
-     (node :w:style {:w:type "paragraph"
-                     :w:styleId "normal"
-                     :w:customStyle "true"}
-           (node :w:name {:w:val name})
-           (node :w:basedOn {:w:val "a"})
+    [;; Paragraph Style Definition
+     (node :w:style {:w:type "paragraph" ; Style Type
+                     :w:styleId "normal" ; Style ID
+                     :w:customStyle "true"} ; User-Defined Style
+           (node :w:name {:w:val name}) ; Primary Style Name
+           (node :w:basedOn {:w:val "a"}) ; Parent Style ID
            (when font
-             (node :w:link {:w:val font-style-name}))
-           (node :w:qFormat)
+             (node :w:link {:w:val font-style-name})) ; Linked Style Reference
+           (node :w:qFormat) ; Primary Style
            (when (or align
                      space-before space-after space-line
                      indent-left indent-right indent-first-line mirror-indents?)
              (ppr options))
            (when (or font font-size font-color bold? italic? underline?)
              (rpr options)))
-     ;; font style of the paragraph style
      (when font
-       (node :w:style {:w:type "character"
-                       :w:styleId font-style-name
-                       :w:customStyle "true"}
-             (node :w:name {:w:val font-style-name})
-             (node :w:basedOn {:w:val "a0"})
+       ;; Font Style Definition for above Paragraph Style
+       (node :w:style {:w:type "character" ; Style Type
+                       :w:styleId font-style-name ; Style ID
+                       :w:customStyle "true"} ; User-Defined Style
+             (node :w:name {:w:val font-style-name}) ; Primary Style Name
+             (node :w:basedOn {:w:val "a0"}) ; Parent Style ID
              (rpr options)))]))
 
 (defn word-styles-xml
   "descripted on: http://officeopenxml.com/WPstyles.php"
   [& styles]
+  ;; Style Definitions
   (node :w:styles word-xmlns
         (flatten [default-styles styles])))
 

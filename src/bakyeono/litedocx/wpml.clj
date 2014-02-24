@@ -369,7 +369,7 @@
   [name
    & {:as options  
       :keys [font font-size font-color
-             bold? italic? underline? strike?
+             bold? italics? underline? strike?
              align
              space-before space-after space-line   
              indent-left indent-right indent-first-line mirror-indents?]}]

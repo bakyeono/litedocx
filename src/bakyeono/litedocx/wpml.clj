@@ -446,42 +446,53 @@
 
   Parameters:
   - style: <string> style of table
-  - h-align: <string or keyword> horizontal alignment option in each cell.
+  - align: <string or keyword> horizontal alignment option in each cell.
   - widths: <vector of numbers> widths of cells
   - & body: content of table (tr is expected)
 
   Examples:
   (table \"table-style1\" :center [964 964 8072] ...)"
-  [style h-align widths & body]
+  [style align widths & body]
+  ;; Table
   (node :w:tbl {}
+        ;; Table Properties
         (node :w:tblPr {}
+              ;; Referenced Table Style
               (node :w:tblStyle {:w:val style})
+              Preferred Table Width
               (node :w:tblW {:w:w (reduce + widths)
-                             :w:type "dxa"})
-              (node :w:jc {:w:val (name h-align)}))
+                             :w:type "dxa"}) ; Table Width Units : nil, pct, dxa, auto
+              ;; Table Alignment
+              (node :w:jc {:w:val (name align)}))
+        ;; Table Grid
         (node :w:tblGrid {}
               (for [w widths]
+                ;; Grid Column Width
                 (node :w:gridCol {:w:gridCol w})))
         body))
 
 (defn tr
-  "Returns XML tag node of table.
+  "Returns XML tag node of table row.
 
   Parameters:
   - & body: content of row (td is expected)"
   [& body]
+  ;; Table Row
   (node :w:tr {}
         body))
 
 (defn td
-  "Returns XML tag node of table.
+  "Returns XML tag node of table cell.
 
   Parameters:
   - width: width of cell
   - & body: content of cell"
   [width & body]
+  ;; Table Cell
   (node :w:tc {}
+        ;; Table Cell Properties
         (node :w:tcPr {}
+              ;; Preferred Table Cell Width
               (node :w:tcW {:w:w width
                             :w:type "dxa"}))
         body))
@@ -493,15 +504,23 @@
   - style: <string or keyword> style of paragraph
   - text: <string> text in paragraph"
   ([text]
+   ;; Paragraph
    (node :w:p {}
+         ;; Text Run
          (node :w:r {}
+               ;; Text
                (node :w:t {}
                      text))))
   ([style text]
+   ;; Paragraph
    (node :w:p {}
+         ;; Paragraph Properties
          (node :w:pPr {}
+               ;; Referenced Paragraph Style
                (node :w:pStyle {:w:val (name style)}))
+         ;; Text Run
          (node :w:r {}
+               ;; Text
                (node :w:t {}
                      text)))))
 

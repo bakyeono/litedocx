@@ -391,7 +391,7 @@
                      space-before space-after space-line
                      indent-left indent-right indent-first-line mirror-indents?)
              (ppr options))
-           (when (or font font-size font-color bold? italic? underline?)
+           (when (or font font-size font-color bold? italics? underline?)
              (rpr options)))
      (when font
        ;; Font Style Definition for above Paragraph Style
@@ -439,7 +439,7 @@
                      space-before space-after space-line
                      indent-left indent-right indent-first-line mirror-indents?)
              (ppr options))
-           (when (or font font-size font-color bold? italic? underline?)
+           (when (or font font-size font-color bold? italics? underline?)
              (rpr options))
            ;; Style Table Properties
            (node :w:tblPr {}

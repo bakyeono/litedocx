@@ -402,6 +402,113 @@
              (node :w:basedOn {:w:val "a0"}) ; Parent Style ID
              (rpr options)))]))
 
+(defn table-style
+  "Returns w:style tag for table style with w:style tag for the font,
+  as a vector containing both of them.
+
+  Parameters:
+  - name: <string> Used as index. Must be unique.
+  - & options: option, value, ...
+
+  Examples:
+  - (table-style \"table1\")
+  - (table-style \"table2\" :font \"Arial\" :font-color \"0000AA\" :align \"both\")
+
+  See More: "
+  [name
+   & {:as options
+      :keys [font font-size font-color
+             bold? italics? underline? strike?
+             word-wrap?
+             align
+             space-before space-after space-line
+             indent-left indent-right indent-first-line mirror-indents?
+             cell-margin-top cell-margin-bottom cell-margin-left cell-margin-right
+             cell-h-align cell-v-align]}]
+  (let [font-style-name (str "character-style-of-" name)]
+    [;; Table Style Definition
+     (node :w:style {:w:type "table" ; Style Type
+                     :w:styleId name ; Style ID
+                     :w:customStyle "true"} ; User-Defined Style
+           (node :w:name {:w:val name}) ; Primary Style Name
+           (node :w:basedOn {:w:val "a"}) ; Parent Style ID
+           (when font
+             (node :w:link {:w:val font-style-name})) ; Linked Style Reference
+           (node :w:qFormat) ; Primary Style
+           (when (or word-wrap? align
+                     space-before space-after space-line
+                     indent-left indent-right indent-first-line mirror-indents?)
+             (ppr options))
+           (when (or font font-size font-color bold? italic? underline?)
+             (rpr options))
+           ;; Style Table Properties
+           (node :w:tblPr {}
+                 ;; Number of Rows in Row Band
+                 (node :w:tblStyleRowBandSize {:w:val 1})
+                 ;; Table Alignment
+                 (node :w:jc {:w:val "both"})
+                 ;; Table Indent from Leading Margin
+                 (node :w:tblInd {:w:val 0
+                                  :w:type "dxa"})
+                 ;; Table Borders
+                 (node :w:tblBorders {}
+                       (node :w:top {:w:val "single" ; Border Style
+                                     :w:color "auto" ; Border Color
+                                     :w:sz "4" ; Border Width
+                                     :w:space "0"}) ; Border Spacing Measurement
+                       (node :w:left {:w:val "single" ; Border Style
+                                      :w:color "auto" ; Border Color
+                                      :w:sz "4" ; Border Width
+                                      :w:space "0"}) ; Border Spacing Measurement
+                       (node :w:bottom {:w:val "single" ; Border Style
+                                        :w:color "auto" ; Border Color
+                                        :w:sz "4" ; Border Width
+                                        :w:space "0"}) ; Border Spacing Measurement
+                       (node :w:right {:w:val "single" ; Border Style
+                                       :w:color "auto" ; Border Color
+                                       :w:sz "4" ; Border Width
+                                       :w:space "0"}) ; Border Spacing Measurement
+                       (node :w:insideH {:w:val "single" ; Border Style
+                                         :w:color "auto" ; Border Color
+                                         :w:sz "4" ; Border Width
+                                         :w:space "0"}) ; Border Spacing Measurement
+                       (node :w:insideV {:w:val "single" ; Border Style
+                                         :w:color "auto" ; Border Color
+                                         :w:sz "4" ; Border Width
+                                         :w:space "0"})) ; Border Spacing Measurement
+                 ;; Table Cell Margin
+                 (node :w:tblCellMar {}
+                       (node :w:top {:w:w cell-margin-top
+                                     :w:type "dxa"})
+                       (node :w:left {:w:w cell-margin-left
+                                      :w:type "dxa"})
+                       (node :w:bottom {:w:w cell-margin-bottom
+                                        :w:type "dxa"})
+                       (node :w:right {:w:w cell-margin-right
+                                       :w:type "dxa"})))
+           ;; Table Row Properties
+           (node :w:trPr {}
+                 ;; Table Row Alignment
+                 (node :w:jc {:w:val cell-h-align}))
+           ;; Table Cell Properties
+           (node :w:tcPr {}
+                 ;; Table Cell Vertical Alignment
+                 (node :w:vAlign {:w:val cell-v-align}))
+           ;; First Row Formatting Properties
+           (node :w:tblStylePr {:w:type "firstRow"})
+           ;; Band 1 Horizontal Formatting Properties
+           (node :w:tblStylePr {:w:type "band1Horz"})
+           ;; Band 2 Horizontal Formatting Properties
+           (node :w:tblStylePr {:w:type "band2Horz"}))
+     (when font
+       ;; Font Style Definition for above Paragraph Style
+       (node :w:style {:w:type "character" ; Style Type
+                       :w:styleId font-style-name ; Style ID
+                       :w:customStyle "true"} ; User-Defined Style
+             (node :w:name {:w:val font-style-name}) ; Primary Style Name
+             (node :w:basedOn {:w:val "a0"}) ; Parent Style ID
+             (rpr options)))]))
+
 (defn word-styles-xml
   "descripted on: http://officeopenxml.com/WPstyles.php"
   [& styles]

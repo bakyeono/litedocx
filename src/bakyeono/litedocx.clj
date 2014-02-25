@@ -25,7 +25,12 @@
                                            (w/td 964 (w/p "a" "age"))
                                            (w/td 8072 (w/p "a" "description"))))
                             (w/p "para1"
-                                 "This is a paragraph."))
+                                 "This is a paragraph.")
+                            (w/img "rId2"
+                                   :name "foo.png"
+                                   :desc "Image Description: this is a testing image."
+                                   :width 6646545
+                                   :height 4154085))
         word-styles-xml (w/word-styles-xml styles)
         word-rels-document-xml-rels (w/word-rels-document-xml-rels resources)
         word-media-resources (w/word-media-resources resources)

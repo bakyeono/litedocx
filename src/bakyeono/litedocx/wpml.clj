@@ -659,7 +659,9 @@
 
 (defn graphic
   "Returns a:graphic tag."
-  [img-id img-desc extent-x extent-y]
+  [resource-id
+   {:as options
+    :keys [name desc width height]}]
   ;; Graphic Object
   (node :a:graphic {}
         ;; Graphic Object Data
@@ -669,16 +671,15 @@
                     ;; Non-Visual Picture Properties
                     (node :pic:nvPicPr {}
                           ;; Non-Visual Drawing Properties
-                          (node :pic:cNvPr {:id img-id ; Unique ID
+                          (node :pic:cNvPr {:id 0 ; Unique ID
                                             :name name ; Name
-                                            :descr img-desc}) ; Description
+                                            :descr desc}) ; Description
                           ;; Non-Visual Picture Drawing Properties
                           (node :pic:cNvPicPr))
                     ;; Picture Fill
                     (node :pic:blipFill {}
                           ;; Blip
-                          (node :a:blip {:r:embed id ; Embedded Picture Reference
-                                         :r:link ""}) ; Linked Picture Reference
+                          (node :a:blip {:r:embed resource-id}) ; Embedded Picture Reference
                           ;; Stretch
                           (node :a:stretch {}
                                 ;; Fill Rectangle
@@ -688,11 +689,9 @@
                           ;; 2D Transform for Individual Objects
                           (node :a:xfrm {}
                                 ;; Offset
-                                (node :a:off {:x 0
-                                              :y 0})
+                                (node :a:off {:x 0 :y 0})
                                 ;; Extents
-                                (node :ext {:x extent-x
-                                            :y extent-y}))
+                                (node :ext {:cx width :cy height}))
                           ;; Preset Geometry
                           (node :a:prstGeom {:prst "rect"} ; Preset Shape 
                                 ;; List of Shape Adjust Values
@@ -700,10 +699,12 @@
 
 (defn img
   "Returns XML tag node of image.
-  
+
   Parameters:
   ..."
-  [id name desc extent-x extent-y]
+  [resource-id
+   & {:as options
+      :keys [name desc width height]}]
   (node :w:p {}
         (node :w:r {}
               (node :w:drawing {}
@@ -711,26 +712,22 @@
                     (node :wp:inline {:distT 0 ; top edge
                                       :distB 0 ; bottom edge
                                       :distL 0 ; left edge
-                                      :distR 0}) ; right edge
-                    ;; Extent ...
-                    (node :wp:extent {:cx extent-x
-                                      :cy extent-y})
-                    ;; Effect Extent ...
-                    (node :wp:effectExtent {:t 0 ; top
-                                            :b 0 ; bottom
-                                            :l 0 ; left
-                                            :r 0}) ; right 
-                    ;; Drawing Object Non-Visual Properties
-                    (node :wp:docPr {:id id ; Unique ID
-                                     :name name ; Name
-                                     :descr desc}) ; Alternative text for Object 
-                    ;; Common DrawingML Non-Visual Properties
-                    (node :wp:cNvGraphicFramePr {}
-                          ;; Graphic Frame Locks
-                          (node :a:graphicFrameLocks {:noSelect false
-                                                      :noMove false
-                                                      :noResize false
-                                                      :noChangeAspect true}))
-                    ;; Graphic
-                    (graphic id desc extent-x extent-y)))))
+                                      :distR 0} ; right edge
+                          ;; Extent ...
+                          (node :wp:extent {:cx width :cy height})
+                          ;; Effect Extent ...
+                          (node :wp:effectExtent {:t 0 :b 0 :l 0 :r 0})
+                          ;; Drawing Object Non-Visual Properties
+                          (node :wp:docPr {:id 0 ; Unique ID
+                                           :name name ; Name
+                                           :descr desc}) ; Alternative text for Object
+                          ;; Common DrawingML Non-Visual Properties
+                          (node :wp:cNvGraphicFramePr {}
+                                ;; Graphic Frame Locks
+                                (node :a:graphicFrameLocks {:noSelect true
+                                                            :noMove false
+                                                            :noResize false
+                                                            :noChangeAspect true}))
+                          ;; Graphic
+                          (graphic resource-id options))))))
 

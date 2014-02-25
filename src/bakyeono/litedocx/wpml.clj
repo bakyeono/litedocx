@@ -161,7 +161,7 @@
   (if (nil? v) nil
     [k v]))
 
-(defn make-attrs
+(defn when-v-attrs
   "Returns an XML tag attributes without nil values."
   [& kvs]
   (into {}
@@ -364,15 +364,15 @@
           (node :w:wordWrap {:w:val true}))
         (when (or space-before space-after space-line)
           ;; Spacing Between Lines and Above/Below Paragraph
-          (node :w:spacing (make-attrs :w:before space-before ; Spacing Above Paragraph
-                                       :w:after space-after ; Spacing Below Paragraph
-                                       :w:line space-line ; Spacing Between Lines in Paragraph
-                                       :w:lineRule "auto"))) ; Type of Spacing Between Lines
+          (node :w:spacing (when-v-attrs :w:before space-before ; Spacing Above Paragraph
+                                         :w:after space-after ; Spacing Below Paragraph
+                                         :w:line space-line ; Spacing Between Lines in Paragraph
+                                         :w:lineRule "auto"))) ; Type of Spacing Between Lines
         (when (or indent-left indent-right indent-first-line)
           ;; Paragraph Indentation
-          (node :w:ind (make-attrs :w:left indent-left ; Left Indentation
-                                   :w:right indent-right ; Right Indentation
-                                   :w:firstLine indent-first-line))) ; Additional First Line Indentation
+          (node :w:ind (when-v-attrs :w:left indent-left ; Left Indentation
+                                     :w:right indent-right ; Right Indentation
+                                     :w:firstLine indent-first-line))) ; Additional First Line Indentation
         (when mirror-indents?
           ;; Use Left/Right Indents as Inside/Outside Indents
           (node :w:mirrorIndents))

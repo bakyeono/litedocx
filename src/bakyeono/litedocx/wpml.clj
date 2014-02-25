@@ -349,7 +349,7 @@
         (node :w:basedOn {:w:val "a0"}) ; Parent Style ID
         (run-properties options)))
 
-(defn- ppr
+(defn- paragraph-properties
   "Creates w:pPr tag node. Called by paragaph-style."
   [{:as options
     :keys [word-wrap?
@@ -414,7 +414,7 @@
            (when (or word-wrap? align
                      space-before space-after space-line
                      indent-left indent-right indent-first-line mirror-indents?)
-             (ppr options))
+             (paragraph-properties options))
            (when (or font font-size font-color bold? italics? underline?)
              (run-properties options)))
            (when font
@@ -487,7 +487,7 @@
            (when (or word-wrap? align
                      space-before space-after space-line
                      indent-left indent-right indent-first-line mirror-indents?)
-             (ppr options))
+             (paragraph-properties options))
            (when (or font font-size font-color bold? italics? underline?)
              (run-properties options))
            ;; Style Table Properties

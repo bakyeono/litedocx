@@ -293,37 +293,6 @@
                                     :w:header 0
                                     :w:footer 0})))))
 
-(defn- ppr
-  "Creates w:pPr tag node. Called by paragaph-style."
-  [{:as options
-    :keys [word-wrap?
-           align
-           space-before space-after space-line
-           indent-left indent-right indent-first-line
-           mirror-indents?]}]
-  ;; Paragraph Properties
-  (node :w:pPr {}
-        (when word-wrap?
-          ;; Allow Line Breaking at Character Level
-          (node :w:wordWrap {:w:val true}))
-        (when (or space-before space-after space-line)
-          ;; Spacing Between Lines and Above/Below Paragraph
-          (node :w:spacing (make-attrs :w:before space-before ; Spacing Above Paragraph
-                                       :w:after space-after ; Spacing Below Paragraph
-                                       :w:line space-line ; Spacing Between Lines in Paragraph
-                                       :w:lineRule "auto"))) ; Type of Spacing Between Lines
-        (when (or indent-left indent-right indent-first-line)
-          ;; Paragraph Indentation
-          (node :w:ind (make-attrs :w:left indent-left ; Left Indentation
-                                   :w:right indent-right ; Right Indentation
-                                   :w:firstLine indent-first-line))) ; Additional First Line Indentation
-        (when mirror-indents?
-          ;; Use Left/Right Indents as Inside/Outside Indents
-          (node :w:mirrorIndents))
-        (when align
-          ;; Paragraph Alignment
-          (node :w:jc {:w:val align}))))
-
 (defn- rpr
   "Creates w:rPr tag node. Called by paragaph-style."
   [{:as options
@@ -356,6 +325,61 @@
           ;; Single Strikethrough
           (node :w:strike {:w:val true}))))
 
+(defn character-style
+  "Returns w:style tag for character style.
+
+  Parameters:
+  - name: <string> Used as index. Must be unique.
+  - & options: option, value, ...
+
+  Examples:
+  - (character-style \"font1\")
+  - (character-style \"font2\" :font \"Arial\" :font-color \"0000AA\" :align \"both\")
+
+  See More: "
+  [name
+   & {:as options
+      :keys [font font-size font-color
+             bold? italics? underline? strike?]}]
+  ;; Font Style Definition for above Paragraph Style
+  (node :w:style {:w:type "character" ; Style Type
+                  :w:styleId font-style-name ; Style ID
+                  :w:customStyle "true"} ; User-Defined Style
+        (node :w:name {:w:val font-style-name}) ; Primary Style Name
+        (node :w:basedOn {:w:val "a0"}) ; Parent Style ID
+        (rpr options)))
+
+(defn- ppr
+  "Creates w:pPr tag node. Called by paragaph-style."
+  [{:as options
+    :keys [word-wrap?
+           align
+           space-before space-after space-line
+           indent-left indent-right indent-first-line
+           mirror-indents?]}]
+  ;; Paragraph Properties
+  (node :w:pPr {}
+        (when word-wrap?
+          ;; Allow Line Breaking at Character Level
+          (node :w:wordWrap {:w:val true}))
+        (when (or space-before space-after space-line)
+          ;; Spacing Between Lines and Above/Below Paragraph
+          (node :w:spacing (make-attrs :w:before space-before ; Spacing Above Paragraph
+                                       :w:after space-after ; Spacing Below Paragraph
+                                       :w:line space-line ; Spacing Between Lines in Paragraph
+                                       :w:lineRule "auto"))) ; Type of Spacing Between Lines
+        (when (or indent-left indent-right indent-first-line)
+          ;; Paragraph Indentation
+          (node :w:ind (make-attrs :w:left indent-left ; Left Indentation
+                                   :w:right indent-right ; Right Indentation
+                                   :w:firstLine indent-first-line))) ; Additional First Line Indentation
+        (when mirror-indents?
+          ;; Use Left/Right Indents as Inside/Outside Indents
+          (node :w:mirrorIndents))
+        (when align
+          ;; Paragraph Alignment
+          (node :w:jc {:w:val align}))))
+
 (defn paragraph-style
   "Returns w:style tag for paragraph style with w:style tag for the font,
   as a vector containing both of them.
@@ -370,14 +394,14 @@
 
   See More: "
   [name
-   & {:as options  
+   & {:as options
       :keys [font font-size font-color
              bold? italics? underline? strike?
              word-wrap?
              align
-             space-before space-after space-line   
+             space-before space-after space-line
              indent-left indent-right indent-first-line mirror-indents?]}]
-  (let [font-style-name (str "character-style-of-" name)]
+  (let [character-style-name (str "embedded-character-style-of-" name)]
     [;; Paragraph Style Definition
      (node :w:style {:w:type "paragraph" ; Style Type
                      :w:styleId name ; Style ID
@@ -385,7 +409,7 @@
            (node :w:name {:w:val name}) ; Primary Style Name
            (node :w:basedOn {:w:val "a"}) ; Parent Style ID
            (when font
-             (node :w:link {:w:val font-style-name})) ; Linked Style Reference
+             (node :w:link {:w:val character-style-name})) ; Linked Style Reference
            (node :w:qFormat) ; Primary Style
            (when (or word-wrap? align
                      space-before space-after space-line
@@ -393,14 +417,38 @@
              (ppr options))
            (when (or font font-size font-color bold? italics? underline?)
              (rpr options)))
-     (when font
-       ;; Font Style Definition for above Paragraph Style
-       (node :w:style {:w:type "character" ; Style Type
-                       :w:styleId font-style-name ; Style ID
-                       :w:customStyle "true"} ; User-Defined Style
-             (node :w:name {:w:val font-style-name}) ; Primary Style Name
-             (node :w:basedOn {:w:val "a0"}) ; Parent Style ID
-             (rpr options)))]))
+           (when font
+             (character-style character-style-name options))]))
+
+(defn- table-border-attrs
+  "Returns an attributes map for content tags of w:tblBorders tag.
+  Called by table-borders."
+  [[style color width space]]
+  {:w:val style ; Border Style : single, ...
+   :w:color color ; Border Color : auto, ...
+   :w:sz width ; Border Width
+   :w:space space}) ; Border Spacing Measurement)
+
+(defn- table-borders
+  "Returns w:tblBorders tag. Called by table-style.
+
+  Parameters:
+  Takes one or six parameters.
+  If only one parameter is given, takes it as every side of borders.
+  When six parameters are fiven, takes them as top, left, bottom, right,
+  inside-horizontal, inside-vertical sides of borders.
+  Each parameter is a sequence of [style color width space] attributes of
+  each side of borders."
+  ([side]
+   (table-borders side side side side side side))
+  ([top left bottom right inside-h inside-v]
+   (node :w:tblBorders {}
+     (node :w:top (table-border-attrs top))
+     (node :w:left (table-border-attrs left))
+     (node :w:bottom (table-border-attrs bottom))
+     (node :w:right (table-border-attrs right))
+     (node :w:insideH (table-border-attrs inside-h))
+     (node :w:insideV (table-border-attrs inside-v)))))
 
 (defn table-style
   "Returns w:style tag for table style with w:style tag for the font,
@@ -425,7 +473,8 @@
              indent-left indent-right indent-first-line mirror-indents?
              cell-margin-top cell-margin-bottom cell-margin-left cell-margin-right
              cell-h-align cell-v-align]}]
-  (let [font-style-name (str "character-style-of-" name)]
+  (let [character-style-name (str "embedded-character-style-of-" name)
+        paragraph-style-name (str "embedded-paragraph-style-of-" name)]
     [;; Table Style Definition
      (node :w:style {:w:type "table" ; Style Type
                      :w:styleId name ; Style ID
@@ -448,44 +497,15 @@
                  ;; Table Alignment
                  (node :w:jc {:w:val "both"})
                  ;; Table Indent from Leading Margin
-                 (node :w:tblInd {:w:val 0
-                                  :w:type "dxa"})
+                 (node :w:tblInd {:w:val 0 :w:type "dxa"})
                  ;; Table Borders
-                 (node :w:tblBorders {}
-                       (node :w:top {:w:val "single" ; Border Style
-                                     :w:color "auto" ; Border Color
-                                     :w:sz "4" ; Border Width
-                                     :w:space "0"}) ; Border Spacing Measurement
-                       (node :w:left {:w:val "single" ; Border Style
-                                      :w:color "auto" ; Border Color
-                                      :w:sz "4" ; Border Width
-                                      :w:space "0"}) ; Border Spacing Measurement
-                       (node :w:bottom {:w:val "single" ; Border Style
-                                        :w:color "auto" ; Border Color
-                                        :w:sz "4" ; Border Width
-                                        :w:space "0"}) ; Border Spacing Measurement
-                       (node :w:right {:w:val "single" ; Border Style
-                                       :w:color "auto" ; Border Color
-                                       :w:sz "4" ; Border Width
-                                       :w:space "0"}) ; Border Spacing Measurement
-                       (node :w:insideH {:w:val "single" ; Border Style
-                                         :w:color "auto" ; Border Color
-                                         :w:sz "4" ; Border Width
-                                         :w:space "0"}) ; Border Spacing Measurement
-                       (node :w:insideV {:w:val "single" ; Border Style
-                                         :w:color "auto" ; Border Color
-                                         :w:sz "4" ; Border Width
-                                         :w:space "0"})) ; Border Spacing Measurement
+                 (table-borders ["single" "auto" 4 0])
                  ;; Table Cell Margin
                  (node :w:tblCellMar {}
-                       (node :w:top {:w:w cell-margin-top
-                                     :w:type "dxa"})
-                       (node :w:left {:w:w cell-margin-left
-                                      :w:type "dxa"})
-                       (node :w:bottom {:w:w cell-margin-bottom
-                                        :w:type "dxa"})
-                       (node :w:right {:w:w cell-margin-right
-                                       :w:type "dxa"})))
+                       (node :w:top {:w:w cell-margin-top :w:type "dxa"})
+                       (node :w:left {:w:w cell-margin-left :w:type "dxa"})
+                       (node :w:bottom {:w:w cell-margin-bottom :w:type "dxa"})
+                       (node :w:right {:w:w cell-margin-right :w:type "dxa"})))
            ;; Table Row Properties
            (node :w:trPr {}
                  ;; Table Row Alignment
@@ -501,13 +521,7 @@
            ;; Band 2 Horizontal Formatting Properties
            (node :w:tblStylePr {:w:type "band2Horz"}))
      (when font
-       ;; Font Style Definition for above Paragraph Style
-       (node :w:style {:w:type "character" ; Style Type
-                       :w:styleId font-style-name ; Style ID
-                       :w:customStyle "true"} ; User-Defined Style
-             (node :w:name {:w:val font-style-name}) ; Primary Style Name
-             (node :w:basedOn {:w:val "a0"}) ; Parent Style ID
-             (rpr options)))]))
+       (character-style character-style-name options))]))
 
 (defn word-styles-xml
   "descripted on: http://officeopenxml.com/WPstyles.php"
@@ -565,7 +579,7 @@
         (node :w:tblPr {}
               ;; Referenced Table Style
               (node :w:tblStyle {:w:val style})
-              Preferred Table Width
+              ;; Preferred Table Width
               (node :w:tblW {:w:w (reduce + widths)
                              :w:type "dxa"}) ; Table Width Units : nil, pct, dxa, auto
               ;; Table Alignment

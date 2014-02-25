@@ -293,7 +293,7 @@
                                     :w:header 0
                                     :w:footer 0})))))
 
-(defn- rpr
+(defn- run-properties
   "Creates w:rPr tag node. Called by paragaph-style."
   [{:as options
     :keys [font font-size font-color bold? italics? underline? strike?]}]
@@ -347,7 +347,7 @@
                   :w:customStyle "true"} ; User-Defined Style
         (node :w:name {:w:val font-style-name}) ; Primary Style Name
         (node :w:basedOn {:w:val "a0"}) ; Parent Style ID
-        (rpr options)))
+        (run-properties options)))
 
 (defn- ppr
   "Creates w:pPr tag node. Called by paragaph-style."
@@ -416,7 +416,7 @@
                      indent-left indent-right indent-first-line mirror-indents?)
              (ppr options))
            (when (or font font-size font-color bold? italics? underline?)
-             (rpr options)))
+             (run-properties options)))
            (when font
              (character-style character-style-name options))]))
 
@@ -489,7 +489,7 @@
                      indent-left indent-right indent-first-line mirror-indents?)
              (ppr options))
            (when (or font font-size font-color bold? italics? underline?)
-             (rpr options))
+             (run-properties options))
            ;; Style Table Properties
            (node :w:tblPr {}
                  ;; Number of Rows in Row Band

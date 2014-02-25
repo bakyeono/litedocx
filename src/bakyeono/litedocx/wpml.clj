@@ -657,6 +657,47 @@
                (node :w:t {}
                      text)))))
 
+(defn graphic
+  "Returns a:graphic tag."
+  [img-id img-desc extent-x extent-y]
+  ;; Graphic Object
+  (node :a:graphic {}
+        ;; Graphic Object Data
+        (node :a:graphicData {:uri "http://schemas.openxmlformats.org/drawingml/2006/picture"}
+              ;; Picture
+              (node :pic:pic {}
+                    ;; Non-Visual Picture Properties
+                    (node :pic:nvPicPr {}
+                          ;; Non-Visual Drawing Properties
+                          (node :pic:cNvPr {:id img-id ; Unique ID
+                                            :name name ; Name
+                                            :descr img-desc}) ; Description
+                          ;; Non-Visual Picture Drawing Properties
+                          (node :pic:cNvPicPr))
+                    ;; Picture Fill
+                    (node :pic:blipFill {}
+                          ;; Blip
+                          (node :a:blip {:r:embed id ; Embedded Picture Reference
+                                         :r:link ""}) ; Linked Picture Reference
+                          ;; Stretch
+                          (node :a:stretch {}
+                                ;; Fill Rectangle
+                                (node :a:fillRect)))
+                    ;; Shape Properties
+                    (node :pic:spPr {}
+                          ;; 2D Transform for Individual Objects
+                          (node :a:xfrm {}
+                                ;; Offset
+                                (node :a:off {:x 0
+                                              :y 0})
+                                ;; Extents
+                                (node :ext {:x extent-x
+                                            :y extent-y}))
+                          ;; Preset Geometry
+                          (node :a:prstGeom {:prst "rect"} ; Preset Shape 
+                                ;; List of Shape Adjust Values
+                                (node :a:avLst)))))))
+
 (defn img
   "Returns XML tag node of image.
   
@@ -690,41 +731,6 @@
                                                       :noMove false
                                                       :noResize false
                                                       :noChangeAspect true}))
-                    ;; Graphic Object
-                    (node :a:graphic {}
-                          ;; Graphic Object Data
-                          (node :a:graphicData {:uri "http://schemas.openxmlformats.org/drawingml/2006/picture"}
-                                ;; Picture
-                                (node :pic:pic {}
-                                      ;; Non-Visual Picture Properties
-                                      (node :pic:nvPicPr {}
-                                            ;; Non-Visual Drawing Properties
-                                            (node :pic:cNvPr {:id id ; Unique ID
-                                                              :name name ; Name
-                                                              :descr desc}) ; Description
-                                            ;; Non-Visual Picture Drawing Properties
-                                            (node :pic:cNvPicPr))
-                                      ;; Picture Fill
-                                      (node :pic:blipFill {}
-                                            ;; Blip
-                                            (node :a:blip {:r:embed id ; Embedded Picture Reference
-                                                           :r:link ""}) ; Linked Picture Reference
-                                            ;; Stretch
-                                            (node :a:stretch {}
-                                                  ;; Fill Rectangle
-                                                  (node :a:fillRect)))
-                                      ;; Shape Properties
-                                      (node :pic:spPr {}
-                                            ;; 2D Transform for Individual Objects
-                                            (node :a:xfrm {}
-                                                  ;; Offset
-                                                  (node :a:off {:x 0
-                                                                :y 0})
-                                                  ;; Extents
-                                                  (node :ext {:x extent-x
-                                                              :y extent-y}))
-                                            ;; Preset Geometry
-                                            (node :a:prstGeom {:prst "rect"} ; Preset Shape 
-                                                  ;; List of Shape Adjust Values
-                                                  (node :a:avLst))))))))))
+                    ;; Graphic
+                    (graphic id desc extent-x extent-y)))))
 

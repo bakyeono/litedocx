@@ -724,7 +724,7 @@
                           ;; Common DrawingML Non-Visual Properties
                           (node :wp:cNvGraphicFramePr {}
                                 ;; Graphic Frame Locks
-                                (node :a:graphicFrameLocks {:noSelect true
+                                (node :a:graphicFrameLocks {:noSelect false
                                                             :noMove false
                                                             :noResize false
                                                             :noChangeAspect true}))

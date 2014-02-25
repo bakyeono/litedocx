@@ -409,12 +409,11 @@
         (node :w:name {:w:val name}) ; Primary Style Name
         (node :w:basedOn {:w:val "a"}) ; Parent Style ID
         (node :w:qFormat) ; Primary Style
-        (when (or word-wrap? align
-                  space-before space-after space-line
-                  indent-left indent-right indent-first-line mirror-indents?)
-          (paragraph-properties options))
-        (when (or font font-size font-color bold? italics? underline?)
-          (run-properties options))))
+        (paragraph-properties options)
+        (run-properties options)))
+
+(def default-table-style-options
+  {})
 
 (defn- table-border-attrs
   "Returns an attributes map for content tags of w:tblBorders tag.
@@ -426,7 +425,7 @@
    :w:space space}) ; Border Spacing Measurement)
 
 (defn- table-borders
-  "Returns w:tblBorders tag. Called by table-style.
+  "Returns w:tblBorders tag. Called by table-properties.
 
   Parameters:
   Takes one or six parameters.
@@ -446,6 +445,50 @@
      (node :w:insideH (table-border-attrs inside-h))
      (node :w:insideV (table-border-attrs inside-v)))))
 
+(defn- table-properties
+  "Creates w:tblPr tag node. Called by table-style.
+
+  Options: See 'Options' of table-style"
+  [{:as options
+    :keys [table-align
+           cell-margin-top cell-margin-left cell-margin-bottom cell-margin-right]}]
+  ;; Table Properties
+  (node :w:tblPr {}
+        ;; Number of Rows in Row Band
+        (node :w:tblStyleRowBandSize {:w:val 1})
+        ;; Table Alignment
+        (node :w:jc {:w:val table-align})
+        ;; Table Indent from Leading Margin
+        (node :w:tblInd {:w:val 0 :w:type "dxa"})
+        ;; Table Borders
+        (table-borders ["single" "auto" 4 0])
+        ;; Table Cell Margin
+        (node :w:tblCellMar {}
+              (node :w:top {:w:w cell-margin-top :w:type "dxa"})
+              (node :w:left {:w:w cell-margin-left :w:type "dxa"})
+              (node :w:bottom {:w:w cell-margin-bottom :w:type "dxa"})
+              (node :w:right {:w:w cell-margin-right :w:type "dxa"}))))
+
+(defn- table-row-properties
+  "Creates w:trPr tag node. Called by table-style."
+  [{:as options
+    :keys [cell-margins]
+    :or default-table-style-options}]
+  ;; Table Row Properties
+  (node :w:trPr {}
+        ;; Table Row Alignment
+        (node :w:jc {:w:val cell-h-align})))
+
+(defn- table-cell-properties
+  "Creates w:tcPr tag node. Called by table-style."
+  [{:as options
+    :keys [cell-margins]
+    :or default-table-style-options}]
+  ;; Table Cell Properties
+  (node :w:tcPr {}
+        ;; Table Cell Vertical Alignment
+        (node :w:vAlign {:w:val cell-v-align}))
+
 (defn table-style
   "Returns w:style tag for table style with w:style tag for the font,
   as a vector containing both of them.
@@ -453,6 +496,15 @@
   Parameters:
   - name: <string> Used as index. Must be unique.
   - & options: option, value, ...
+
+  Options:
+  - table-align: Alignment of table itself. Values: left, right, both, ...
+  - cell-margin-top: Margin in this side of cell. Value: numbers.
+  - cell-margin-left: Same as above.
+  - cell-margin-bottom: Same as above.
+  - cell-margin-right: Same as above.
+  - cell-h-align: Horizontal alignment inside cells. Values: left, right, both, ...
+  - cell-v-align: Vertical alignment inside cells. Values: top, bottom, center, ...
 
   Examples:
   - (table-style \"table1\")
@@ -467,6 +519,7 @@
              align
              space-before space-after space-line
              indent-left indent-right indent-first-line mirror-indents?
+             table-align
              cell-margin-top cell-margin-bottom cell-margin-left cell-margin-right
              cell-h-align cell-v-align]}]
   ;; Table Style Definition
@@ -476,36 +529,11 @@
         (node :w:name {:w:val name}) ; Primary Style Name
         (node :w:basedOn {:w:val "a1"}) ; Parent Style ID
         (node :w:qFormat) ; Primary Style
-        (when (or word-wrap? align
-                  space-before space-after space-line
-                  indent-left indent-right indent-first-line mirror-indents?)
-          (paragraph-properties options))
-        (when (or font font-size font-color bold? italics? underline?)
-          (run-properties options))
-        ;; Style Table Properties
-        (node :w:tblPr {}
-              ;; Number of Rows in Row Band
-              (node :w:tblStyleRowBandSize {:w:val 1})
-              ;; Table Alignment
-              (node :w:jc {:w:val "both"})
-              ;; Table Indent from Leading Margin
-              (node :w:tblInd {:w:val 0 :w:type "dxa"})
-              ;; Table Borders
-              (table-borders ["single" "auto" 4 0])
-              ;; Table Cell Margin
-              (node :w:tblCellMar {}
-                    (node :w:top {:w:w cell-margin-top :w:type "dxa"})
-                    (node :w:left {:w:w cell-margin-left :w:type "dxa"})
-                    (node :w:bottom {:w:w cell-margin-bottom :w:type "dxa"})
-                    (node :w:right {:w:w cell-margin-right :w:type "dxa"})))
-        ;; Table Row Properties
-        (node :w:trPr {}
-              ;; Table Row Alignment
-              (node :w:jc {:w:val cell-h-align}))
-        ;; Table Cell Properties
-        (node :w:tcPr {}
-              ;; Table Cell Vertical Alignment
-              (node :w:vAlign {:w:val cell-v-align}))
+        (paragraph-properties options)
+        (run-properties options)
+        (table-properties options)
+        (table-row-properties options)
+        (table-cell-properties options)
         ;; First Row Formatting Properties
         (node :w:tblStylePr {:w:type "firstRow"})
         ;; Band 1 Horizontal Formatting Properties

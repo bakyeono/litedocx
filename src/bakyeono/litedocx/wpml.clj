@@ -148,20 +148,20 @@
          (node :w:semiHidden)
          (node :w:unhideWhenUsed))])
 
-(defn when-v-node
+(defn- when-v-node
   "Returns an XML tag node when the value exists."
   [v tag]
   (cond (nil? v) nil
         (= "" v) (node tag)
         true (node tag {} (str v))))
 
-(defn when-v-kv
+(defn- when-v-kv
   "Returns a vector of [k v] when the value exists."
   [v k]
   (if (nil? v) nil
     [k v]))
 
-(defn when-v-attrs
+(defn- when-v-attrs
   "Returns an XML tag attributes without nil values."
   [& kvs]
   (into {}

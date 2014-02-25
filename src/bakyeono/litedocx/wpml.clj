@@ -177,6 +177,7 @@
    :target "styles.xml"})
 
 (defn- content-type->relationship-type
+  "Called by make-resource"
   [content-type]
   (str xmlns-r "/" (re-find #"[\w]*" content-type)))
 

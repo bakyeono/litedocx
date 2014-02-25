@@ -344,9 +344,9 @@
              bold? italics? underline? strike?]}]
   ;; Font Style Definition for above Paragraph Style
   (node :w:style {:w:type "character" ; Style Type
-                  :w:styleId font-style-name ; Style ID
+                  :w:styleId name ; Style ID
                   :w:customStyle "true"} ; User-Defined Style
-        (node :w:name {:w:val font-style-name}) ; Primary Style Name
+        (node :w:name {:w:val name}) ; Primary Style Name
         (node :w:basedOn {:w:val "a0"}) ; Parent Style ID
         (run-properties options)))
 
@@ -412,9 +412,6 @@
         (paragraph-properties options)
         (run-properties options)))
 
-(def default-table-style-options
-  {})
-
 (defn- table-border-attrs
   "Returns an attributes map for content tags of w:tblBorders tag.
   Called by table-borders."
@@ -472,8 +469,7 @@
 (defn- table-row-properties
   "Creates w:trPr tag node. Called by table-style."
   [{:as options
-    :keys [cell-margins]
-    :or default-table-style-options}]
+    :keys [cell-h-align]}]
   ;; Table Row Properties
   (node :w:trPr {}
         ;; Table Row Alignment
@@ -482,12 +478,11 @@
 (defn- table-cell-properties
   "Creates w:tcPr tag node. Called by table-style."
   [{:as options
-    :keys [cell-margins]
-    :or default-table-style-options}]
+    :keys [cell-v-align]}]
   ;; Table Cell Properties
   (node :w:tcPr {}
         ;; Table Cell Vertical Alignment
-        (node :w:vAlign {:w:val cell-v-align}))
+        (node :w:vAlign {:w:val cell-v-align})))
 
 (defn table-style
   "Returns w:style tag for table style with w:style tag for the font,

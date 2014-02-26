@@ -718,13 +718,19 @@
   - TODO"
   [resource-id
    & {:as options
-      :keys [name desc width height
+      :keys [style
+             name desc width height
              no-select? no-move? no-resize? no-change-aspect?]
       :or {:no-select? false
            :no-move? false
            :no-resize? false
            :no-change-aspect? true}}]
   (node :w:p {}
+        ;; Paragraph Properties
+        (when style
+          (node :w:pPr {}
+                ;; Referenced Paragraph Style
+                (node :w:pStyle {:w:val (name style)})))
         (node :w:r {}
               (node :w:drawing {}
                     ;; Distance from Text on ...

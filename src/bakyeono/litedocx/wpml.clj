@@ -701,7 +701,20 @@
   "Returns XML tag node of image.
 
   Parameters:
-  ..."
+  - resource-id: <string> Resource id of image. You set this id with make-resource function.
+  - & options: option, value, ...
+
+  Options:
+  - table-align: Alignment of table itself. Values: left, right, both, ...
+  - cell-margin-top: Margin in this side of cell. Value: numbers.
+  - cell-margin-left: Same as above.
+  - cell-margin-bottom: Same as above.
+  - cell-margin-right: Same as above.
+  - cell-h-align: Horizontal alignment inside cells. Values: left, right, both, ...
+  - cell-v-align: Vertical alignment inside cells. Values: top, bottom, center, ...
+
+  Examples:
+  - TODO"
   [resource-id
    & {:as options
       :keys [name desc width height
@@ -731,4 +744,3 @@
                                                             :noChangeAspect (if no-change-aspect? true false)}))
                           ;; Graphic
                           (graphic resource-id options))))))
-

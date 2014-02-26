@@ -2,6 +2,7 @@
   "WordProcessingML templates & snippets used in litedocx."
   (:require [clojure.string :as str])
   (:require [clojure.data.xml :as xml])
+  (:require [bakyeono.litedocx.unit :as unit])
   (:use [bakyeono.litedocx.util]))
 
 ;;; OOXML Namespaces

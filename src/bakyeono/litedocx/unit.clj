@@ -52,6 +52,7 @@
     [n unit]))
 
 (defn conversion-rate
+  "Returns conversion rate for 'from' unit -> 'to' unit."
   [from to]
   (let [sym (symbol (str to "-per-" from))]
     (cond (resolve sym) (eval sym)

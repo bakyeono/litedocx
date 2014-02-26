@@ -1,5 +1,6 @@
 (ns bakyeono.litedocx.unit
   "Thinchgs for unit conversion."
+  (:require [clojure.string :as str])
   (:use [bakyeono.litedocx.util])
   (:gen-class))
 
@@ -18,7 +19,7 @@
 (defconst inch-per-px (/ 1 px-per-inch))
 (defconst pt-per-twip (/ 1 twip-per-pt))
 
-;;; Combinchation
+;;; Combination
 (defconst pt-per-inch (* pt-per-px px-per-inch))
 (defconst pt-per-cm (* pt-per-inch inch-per-cm))
 (defconst pt-per-mm (* pt-per-cm cm-per-mm))
@@ -41,4 +42,31 @@
 (defconst mm-per-twip (* mm-per-pt pt-per-twip))
 
 ;;; Functions
-;;; TODO
+(defn parse-unit
+  "Takes a string expression of a number and returns it as a [number unit]
+  vector."
+  [s]
+  (let [s (str/trim s)
+        n (Double/parseDouble (re-find #"^-?\d+\.?\d*" s))
+        unit (re-find #"[a-z]+$" s)]
+    [n unit]))
+
+(defn conversion-rate
+  [from to]
+  (let [sym (symbol (str from "-per-" to))]
+    (cond (resolve sym) (eval sym)
+          (= from to) 1
+          true (throw (Exception. (str "Unsupported unit conversion: "
+                                       from " -> " to))))))
+
+(defn convert
+  "Takes a string expression of a value and its unit and then converts it into
+  given to-unit.
+
+  Parameters:
+  - value: <string or number>
+  - to: <string>"
+  [value to]
+  (let [[n unit] (parse-unit value)
+        rate (conversion-rate unit (name to))]
+    (* n rate)))

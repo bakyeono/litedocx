@@ -53,7 +53,7 @@
 
 (defn conversion-rate
   [from to]
-  (let [sym (symbol (str from "-per-" to))]
+  (let [sym (symbol (str to "-per-" from))]
     (cond (resolve sym) (eval sym)
           (= from to) 1
           true (throw (Exception. (str "Unsupported unit conversion: "
@@ -64,8 +64,15 @@
   given to-unit.
 
   Parameters:
-  - value: <string or number>
-  - to: <string>"
+  - value: <string> value with unit.
+  - to: <string or keyword> target unit type.
+
+  Examples:
+  - (convert \"10px\" \"mm\")
+  - (convert \"29.7 cm\" :twip)
+
+  Supported Unit Types:
+  - Length Units: inch, cm, mm, px, pt, twip"
   [value to]
   (let [[n unit] (parse-unit value)
         rate (conversion-rate unit (name to))]

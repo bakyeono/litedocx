@@ -54,7 +54,7 @@
 (defn conversion-rate
   "Returns conversion rate for 'from' unit -> 'to' unit."
   [from to]
-  (let [sym (symbol (str to "-per-" from))]
+  (let [sym (symbol (str "bakyeono.litedocx.unit/" to "-per-" from))]
     (cond (resolve sym) (eval sym)
           (= from to) 1
           true (throw (Exception. (str "Unsupported unit conversion: "

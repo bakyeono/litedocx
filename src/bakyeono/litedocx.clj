@@ -13,7 +13,7 @@
 
 (defn pack-docx
   "Creates DOCX package.
-  Resources are created by w/make-resources."
+  Resources are created by w/resources."
   [dst styles resources]
   (let [content-types-xml (w/content-types-xml resources)
         rels-rels (w/rels-rels)
@@ -48,7 +48,7 @@
   (pack-docx
     "SAMPLE.docx"
     [(w/paragraph-style "para1" :font "NanumGothic" :font-color "0000AA" :align "both")]
-    (w/make-resources
+    (w/resources
       ["image/png" "foo.png" (load-byte-array "foo.png")])))
 
 (defn sample-pack2
@@ -60,4 +60,4 @@
   (pack-docx
     "SAMPLE3.docx"
     [(w/paragraph-style "para1" :font "NanumGothic" :font-color "0000AA" :align "both")]
-    (w/make-resources)))
+    (w/resources)))

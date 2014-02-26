@@ -177,13 +177,13 @@
    :target "styles.xml"})
 
 (defn- content-type->relationship-type
-  "Called by make-resource"
+  "Called by resource"
   [content-type]
   (str xmlns-r "/" (re-find #"[\w]*" content-type)))
 
-(defn- make-resource
+(defn- resource
   "Creates an external resource information map for DOCX pakcage.
-  Called by make-resources"
+  Called by resources"
   [i [content-type filename body]]
   {:id (str "rId" i)
    :part-name (str "/word/media/" filename)
@@ -193,16 +193,16 @@
    :path (str "word/media/" filename)
    :body body})
 
-(defn make-resources
+(defn resources
   "Creates a vector of external resource information maps for DOCX pakcage.
 
   Parameters:
   - & specs: [content-type filename body] of the resource, ...
 
   Examples:
-  - (make-resources [\"image/png\" \"embeded_image1.png\" FILE_BODY] ...)"
+  - (resources [\"image/png\" \"embeded_image1.png\" FILE_BODY] ...)"
   [& specs]
-  (let [custom-resources (map make-resource
+  (let [custom-resources (map resource
                               (range 2 (+ 2 (count specs)))
                               specs)] 
     (cons styles-xml-resource custom-resources)))
@@ -220,7 +220,7 @@
   Parameters:
   - resources: <vector of {:content-type <string>, :part-name <string>}>}
 
-  Note that resources should be created by make-resources."
+  Note that resources should be created by resources."
   [resources]
   (node :Types content-types-xml-xmlns
         default-content-types
@@ -549,7 +549,7 @@
   Parameters:
   - resources: <vector of {:path <string>, :body <byte-array>}>}
 
-  Note that resources should be created by make-resources."
+  Note that resources should be created by resources."
   [resources]
   (flatten
     (for [{:keys [path body]} (drop 1 resources)]
@@ -569,7 +569,7 @@
   Parameters:
   - resources: <vector of {:id <number>, :type <string>, :target <string>}>}
 
-  Note that resources should be created by make-resources."
+  Note that resources should be created by resources."
   [resources]
   (node :Relationships relationships-xmlns
         (map rels resources)))
@@ -701,7 +701,7 @@
   "Returns XML tag node of image.
 
   Parameters:
-  - resource-id: <string> Resource id of image. You set this id with make-resource function.
+  - resource-id: <string> Resource id of image. You set this id with resource function.
   - & options: option, value, ...
 
   Options:

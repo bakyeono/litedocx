@@ -9,6 +9,14 @@
   (:require [clojure.data.xml :as xml]))
 
 ;;; def~
+(defmacro defconst
+  [symbol init]
+  `(def
+    ~(with-meta symbol
+       (assoc (meta symbol)
+        :const true))
+    ~init))
+
 (defmacro defconst-
   [symbol init]
   `(def

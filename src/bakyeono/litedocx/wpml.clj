@@ -660,9 +660,9 @@
 
 (defn graphic
   "Returns a:graphic tag."
-  [resource-id
+  [resource-id width height
    {:as options
-    :keys [name desc width height]}]
+    :keys [name desc]}]
   ;; Graphic Object
   (node :a:graphic {}
         ;; Graphic Object Data
@@ -692,7 +692,8 @@
                                 ;; Offset
                                 (node :a:off {:x 0 :y 0})
                                 ;; Extents
-                                (node :a:ext {:cx width :cy height}))
+                                (node :a:ext {:cx (unit/convert width :emu)
+                                              :cy (unit/convert height :emu)}))
                           ;; Preset Geometry
                           (node :a:prstGeom {:prst "rect"} ; Preset Shape 
                                 ;; List of Shape Adjust Values
@@ -703,6 +704,8 @@
 
   Parameters:
   - resource-id: <string> Resource id of image. You set this id with resource function.
+  - width: <string> Width of the image. The unit must be specified.
+  - height: <string> Height of the image. The unit must be specified.
   - & options: option, value, ...
 
   Options:
@@ -716,10 +719,10 @@
 
   Examples:
   - TODO"
-  [resource-id
+  [resource-id width height
    & {:as options
       :keys [style
-             name desc width height
+             name desc
              no-select? no-move? no-resize? no-change-aspect?]
       :or {:no-select? false
            :no-move? false
@@ -739,7 +742,8 @@
                                       :distL 0 ; left edge
                                       :distR 0} ; right edge
                           ;; Extent ...
-                          (node :wp:extent {:cx width :cy height})
+                          (node :wp:extent {:cx (unit/convert width :emu)
+                                            :cy (unit/convert height :emu)})
                           ;; Effect Extent ...
                           (node :wp:effectExtent {:t 0 :b 0 :l 0 :r 0})
                           ;; Drawing Object Non-Visual Properties
@@ -754,4 +758,4 @@
                                                             :noResize no-resize?
                                                             :noChangeAspect no-change-aspect?}))
                           ;; Graphic
-                          (graphic resource-id options))))))
+                          (graphic resource-id width height options))))))

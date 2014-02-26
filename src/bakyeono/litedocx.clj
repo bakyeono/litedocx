@@ -27,10 +27,10 @@
                             (w/p "para1"
                                  "This is a paragraph.")
                             (w/img "rId2"
+                                   "18cm"
+                                   "300px"
                                    :name "foo.png"
-                                   :desc "Image Description: this is a testing image."
-                                   :width 6646545
-                                   :height 4154085))
+                                   :desc "Image Description: this is a testing image."))
         word-styles-xml (w/word-styles-xml styles)
         word-rels-document-xml-rels (w/word-rels-document-xml-rels resources)
         word-media-resources (w/word-media-resources resources)

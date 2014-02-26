@@ -691,7 +691,7 @@
                                 ;; Offset
                                 (node :a:off {:x 0 :y 0})
                                 ;; Extents
-                                (node :ext {:cx width :cy height}))
+                                (node :a:ext {:cx width :cy height}))
                           ;; Preset Geometry
                           (node :a:prstGeom {:prst "rect"} ; Preset Shape 
                                 ;; List of Shape Adjust Values

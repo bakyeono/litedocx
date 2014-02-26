@@ -719,7 +719,11 @@
   [resource-id
    & {:as options
       :keys [name desc width height
-             no-select? no-move? no-resize? no-change-aspect?]}]
+             no-select? no-move? no-resize? no-change-aspect?]
+      :or {:no-select? false
+           :no-move? false
+           :no-resize? false
+           :no-change-aspect? true}}]
   (node :w:p {}
         (node :w:r {}
               (node :w:drawing {}
@@ -739,9 +743,9 @@
                           ;; Common DrawingML Non-Visual Properties
                           (node :wp:cNvGraphicFramePr {}
                                 ;; Graphic Frame Locks
-                                (node :a:graphicFrameLocks {:noSelect (if no-select? true false)
-                                                            :noMove (if no-move? true false)
-                                                            :noResize (if no-resize? true false)
-                                                            :noChangeAspect (if no-change-aspect? true false)}))
+                                (node :a:graphicFrameLocks {:noSelect no-select?
+                                                            :noMove no-move?
+                                                            :noResize no-resize?
+                                                            :noChangeAspect no-change-aspect?}))
                           ;; Graphic
                           (graphic resource-id options))))))

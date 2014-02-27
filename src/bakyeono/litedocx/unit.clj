@@ -56,10 +56,10 @@
 (defn- conversion-medium
   "Takes a keyword of unit and returns its preffered conversion medium."
   [u]
-  (cond (metric-set u) [unit-per-m m-per-unit]
-        (inch-set u) [unit-per-inch inch-per-unit]))
+  (cond (metric-set u) [m-per-unit unit-per-m]
+        (inch-set u) [inch-per-unit unit-per-inch]))
 
-(defn conversion-rate
+(defn- conversion-rate
   "Returns conversion rate for 'from' unit -> 'to' unit. The parameters should
   be keywords."
   [from to]
@@ -78,12 +78,12 @@
   - value: <string> value with unit.
   - to: <string or keyword> target unit type.
 
+  Supported Unit Types:
+  - Length Units: inch, cm, km, m, mm, px, pt, dxa, emu
+
   Examples:
   - (convert \"10px\" \"mm\")
-  - (convert \"29.7 cm\" :dxa)
-
-  Supported Unit Types:
-  - Length Units: inch, cm, km, m, mm, px, pt, dxa, emu"
+  - (convert \"29.7 cm\" :dxa)"
   [value to]
   (let [[n unit] (parse-unit value)
         rate (conversion-rate unit (keyword to))]

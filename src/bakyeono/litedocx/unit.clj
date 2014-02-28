@@ -21,13 +21,18 @@
   {:cm       2.54
    :dxa      1440
    :emu      914400
+   :feet     12
+   :ft       12
+   :in.      1
    :inch     1
    :km       0.0000254
    :m        0.0254
    :mm       25.4
    :pt       72
    :px       96
-   :twip     1440})
+   :twip     1440
+   :yard     36
+   :yd       36})
 
 (defconst inch-per-unit (reverse-conversion-map unit-per-inch))
 

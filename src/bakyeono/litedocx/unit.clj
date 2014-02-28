@@ -41,7 +41,8 @@
 
 ;;; Conversion rate map selector
 (defconst metric-set #{:cm :km :m :mm})
-(defconst inch-set #{:dxa :emu :inch :pt :px :twip})
+(defconst inch-set (clojure.set/difference (set (keys unit-per-inch))
+                                           metric-set))
 
 ;;; Functions
 (defn- parse-unit

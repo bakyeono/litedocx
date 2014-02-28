@@ -54,7 +54,8 @@
     [n unit]))
 
 (defn- conversion-medium
-  "Takes a keyword of unit and returns its preffered conversion medium."
+  "Takes a keyword of unit and returns the preffered conversion medium of the
+  unit."
   [u]
   (cond (metric-set u) [m-per-unit unit-per-m]
         (inch-set u) [inch-per-unit unit-per-inch]))

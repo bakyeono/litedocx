@@ -11,6 +11,12 @@
     (for [[k v] m]
       [k (/ 1 (k m))])))
 
+(defconst flat-unit-per-m
+  {:cm       100
+   :km       1/1000
+   :m        1
+   :mm       1000})
+
 (defconst unit-per-inch
   {:cm       2.54
    :dxa      1440
@@ -26,21 +32,15 @@
 (defconst inch-per-unit (reverse-conversion-map unit-per-inch))
 
 (defconst unit-per-m
-  {:cm       100
-   :dxa      (* (:m inch-per-unit) (inch-per-unit :dxa))
-   :emu      (* (:m inch-per-unit) (inch-per-unit :emu))
-   :inch     (:m inch-per-unit)
-   :km       1/1000
-   :m        1
-   :mm       1000
-   :pt       (* (:m inch-per-unit) (inch-per-unit :pt))
-   :px       (* (:m inch-per-unit) (inch-per-unit :px))
-   :twip     (* (:m inch-per-unit) (inch-per-unit :twip))})
+  (into (into {} (for [k (keys unit-per-inch)]
+                   [k (* (inch-per-unit :m)
+                         (k unit-per-inch))]))
+        flat-unit-per-m))
 
 (defconst m-per-unit (reverse-conversion-map unit-per-m))
 
 ;;; Conversion rate map selector
-(defconst metric-set #{:cm :km :m :mm})
+(defconst metric-set (set (keys flat-unit-per-m)))
 (defconst inch-set (clojure.set/difference (set (keys unit-per-inch))
                                            metric-set))
 

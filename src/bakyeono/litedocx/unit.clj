@@ -56,7 +56,7 @@
   [s]
   (let [s (str/trim s)
         n (Double/parseDouble (re-find #"^-?\d+\.?\d*" s))
-        unit (-> (re-find #"[a-z]+$" s) clojure.string/lower-case keyword)]
+        unit (-> (re-find #"[a-z]+.?$" s) clojure.string/lower-case keyword)]
     [n unit]))
 
 (defn- conversion-medium

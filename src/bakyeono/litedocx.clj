@@ -43,15 +43,7 @@
              page-width page-height page-orientation
              page-margin-top page-margin-bottom page-margin-left page-margin-right
              page-margin-header page-margin-footer
-             title subject creator keywords description last-modified-by]
-      :or {:application "" :app-version ""
-           :page-width "210mm" :page-height "297mm" :page-orientation "portrait"
-           :page-margin-top 720 :page-margin-bottom 720
-           :page-margin-left 720 :page-margin-right 720
-           :page-margin-header 0 :page-margin-footer 0
-           :title "" :subject ""
-           :creator "" :last-modified-by ""
-           :keywords "" :description ""}}]
+             title subject creator keywords description last-modified-by]}]
   (let [content-types-xml (w/content-types-xml resources)
         rels-rels (w/rels-rels)
         doc-props-app-xml (w/doc-props-app-xml params)
@@ -71,45 +63,65 @@
 
 (defn sample1
   []
-  (write-docx :styles [(w/paragraph-style "headline"
+  (write-docx "SAMPLE1.docx"
+              :styles [(w/paragraph-style "headline"
                                           :font "Sans Serif"
                                           :font-color "000000"
-                                          :font-size 20
+                                          :font-size 40
                                           :bold true
                                           :align "both")
                        (w/paragraph-style "date"
                                           :font "Arial"
                                           :font-color "4444CC"
-                                          :font-size 12
+                                          :font-size 20
                                           :italics true
-                                          :algin "right")
+                                          :align "right")
                        (w/paragraph-style "author"
                                           :font "Arial"
                                           :font-color "aa0000"
-                                          :font-size 13
+                                          :font-size 24
                                           :algin "right")
                        (w/paragraph-style "monospace"
                                           :font "Monospace"
                                           :font-color "000000"
-                                          :algin "left")
-                       (w/paragraph-style "body")
+                                          :align "left")
+                       (w/paragraph-style "h1"
+                                          :font "Arial"
+                                          :font-color "000000"
+                                          :font-size 24
+                                          :bold true)
+                       (w/paragraph-style "body"
+                                          :font "Arial"
+                                          :font-color "000000"
+                                          :font-size 20)
                        (w/table-style "table"
                                       :font "Arial"
                                       :font-color "449944"
                                       :align "center")]
               ;; TODO: need a better way to create resource meta datas
               :resources (w/resources ["image/png" "foo.png" (load-byte-array "foo.png")])
-              :document [(w/table "a1" :center [964 964 8072]
-                                  (w/tr (w/td 964 (w/p "a" "name"))
-                                        (w/td 964 (w/p "a" "age"))
-                                        (w/td 8072 (w/p "a" "description"))))
-                         (w/p "para1"
-                              "This is a paragraph.")
-                         (w/img "rId2"
-                                "800px"
-                                "600px"
-                                :name "foo.png"
-                                :desc "Image Description: this is a testing image.")]))
+              :body [(w/p "headline" "A Sample Document Written With Litedocx")
+                     (w/p "date" (str (java.util.Date.)))
+                     (w/p "author" "Bak Yeon O")
+                     (w/p "body" "")
+                     (w/p "body" "An easy way to make DOCX documents with Clojure.")
+                     (w/p "monospace" "int main(int argc, char** argv)")
+                     ;; TODO: need a better way to create tables
+                     (w/table "a1" :center [964 964 8072]
+                              (w/tr (w/td 964 (w/p "h1" "name"))
+                                    (w/td 964 (w/p "h1" "age"))
+                                    (w/td 8072 (w/p "h1" "description")))
+                              (w/tr (w/td 964 (w/p "body" "Alexandra"))
+                                    (w/td 964 (w/p "body" "30"))
+                                    (w/td 8072 (w/p "body" "A young woman.")))
+                              (w/tr (w/td 964 (w/p "body" "Mellisa"))
+                                    (w/td 964 (w/p "body" "32"))
+                                    (w/td 8072 (w/p "body" "Another young woman."))))
+                     (w/img "rId2"
+                            "800px"
+                            "600px"
+                            :name "foo.png"
+                            :desc "Image Description: this is a testing image.")]))
 
 (defn sample-pack
   []

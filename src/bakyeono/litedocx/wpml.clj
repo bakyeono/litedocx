@@ -231,12 +231,12 @@
   "Creates XML data for docProps/app.xml file in DOCX pakcage.
 
   Parameters:
-  - & properties: option, value, ...
+  - options: option, value, ...
 
   Examples:
-  - (doc-props-app-xml :application \"Microsoft Office Word\" :app-version \"12.0000\")"
-  [& {:as options
-      :keys [application app-version]}]
+  - (doc-props-app-xml {:application \"Microsoft Office Word\" :app-version \"12.0000\")}"
+  [{:as options
+    :keys [application app-version]}]
   (node :properties:Properties doc-props-app-xml-xmlns
         (map when-v-node
              [application app-version]
@@ -260,12 +260,12 @@
   "Creates XML data for docProps/core.xml file in DOCX pakcage.
 
   Parameters:
-  - & properties: option, value, ...
+  - properties: option, value, ...
 
   Examples:
-  - (doc-props-core-xml :creator \"Bak Yeon O\" :last-modified-by \"Bak Yeon O\")"
-  [& {:as properties
-      :keys [title subject creator keywords description last-modified-by]}]
+  - (doc-props-core-xml {:creator \"Bak Yeon O\" :last-modified-by \"Bak Yeon O\"})"
+  [{:as properties
+    :keys [title subject creator keywords description last-modified-by]}]
   (node :cp:coreProperties doc-props-core-xml-xmlns
         (map when-v-node
              [title subject creator keywords description last-modified-by]
@@ -273,12 +273,18 @@
               :dc:description :cp:lastModifiedBy])))
 
 (defn word-document-xml
-  "Creates XML data for word/document.xml file in DOCX pakcage."
-  [& {:as params
-      :keys [page-width page-height page-orientation
-             page-margin-top page-margin-bottom page-margin-left page-margin-right
-             page-margin-header page-margin-footer
-             body]}]
+  "Creates XML data for word/document.xml file in DOCX pakcage.
+
+  Parameters:
+  - TODO
+
+  Examples:
+  - TODO"
+  [{:as params
+    :keys [page-width page-height page-orientation
+           page-margin-top page-margin-bottom page-margin-left page-margin-right
+           page-margin-header page-margin-footer
+           body]}]
   ;; Document
   (node :w:document word-xmlns
         ;; w:body
@@ -295,7 +301,7 @@
                                    :w:code 9}) ; Printer Paper Code
                     ;; Page Margins
                     (node :w:pgMar {:w:top page-margin-top ; (default: 720)
-                                    :w:bottom page-margin-bottm ; (default: 720)
+                                    :w:bottom page-margin-bottom ; (default: 720)
                                     :w:left page-margin-left ; (default: 720)
                                     :w:right page-margin-right ; (default: 720)
                                     :w:header page-margin-header ; (default: 0)

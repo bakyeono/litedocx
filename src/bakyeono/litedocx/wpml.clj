@@ -274,7 +274,11 @@
 
 (defn word-document-xml
   "Creates XML data for word/document.xml file in DOCX pakcage."
-  [& body]
+  [& {:as params
+      :keys [page-width page-height page-orientation
+             page-margin-top page-margin-bottom page-margin-left page-margin-right
+             page-margin-header page-margin-footer
+             body]}]
   ;; Document
   (node :w:document word-xmlns
         ;; w:body
@@ -283,17 +287,19 @@
               ;; Document Final Section Properties
               (node :w:sectPr {}
                     ;; Page Size
-                    (node :w:pgSz {:w:w 11907 ; Page Width
-                                   :w:h 16839 ; Page Height
-                                   :w:orient "portrait" ; Page Orientation
+                    (node :w:pgSz {:w:w (unit/convert page-width "dxa") ; Page Width
+                                                                        ; (default: 11907)
+                                   :w:h (unit/convert page-height "dxa") ; Page Height
+                                                                         ; (default: 16839)
+                                   :w:orient (name page-orientation) ; Page Orientation
                                    :w:code 9}) ; Printer Paper Code
                     ;; Page Margins
-                    (node :w:pgMar {:w:top 720
-                                    :w:right 720
-                                    :w:bottom 720
-                                    :w:left 720
-                                    :w:header 0
-                                    :w:footer 0})))))
+                    (node :w:pgMar {:w:top page-margin-top ; (default: 720)
+                                    :w:bottom page-margin-bottm ; (default: 720)
+                                    :w:left page-margin-left ; (default: 720)
+                                    :w:right page-margin-right ; (default: 720)
+                                    :w:header page-margin-header ; (default: 0)
+                                    :w:footer page-margin-footer}))))) ; (default: 0)
 
 (defn- run-properties
   "Creates w:rPr tag node. Called by paragaph-style."

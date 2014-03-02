@@ -281,31 +281,31 @@
   Examples:
   - TODO"
   [{:as params
-    :keys [page-width page-height page-orientation
-           page-margin-top page-margin-bottom page-margin-left page-margin-right
-           page-margin-header page-margin-footer
-           body]}]
-  ;; Document
-  (node :w:document word-xmlns
-        ;; w:body
-        (node :w:body {}
-              body
-              ;; Document Final Section Properties
-              (node :w:sectPr {}
-                    ;; Page Size
-                    (node :w:pgSz {:w:w (unit/convert page-width "dxa") ; Page Width
-                                                                        ; (default: 11907)
-                                   :w:h (unit/convert page-height "dxa") ; Page Height
-                                                                         ; (default: 16839)
-                                   :w:orient (name page-orientation) ; Page Orientation
-                                   :w:code 9}) ; Printer Paper Code
-                    ;; Page Margins
-                    (node :w:pgMar {:w:top page-margin-top ; (default: 720)
-                                    :w:bottom page-margin-bottom ; (default: 720)
-                                    :w:left page-margin-left ; (default: 720)
-                                    :w:right page-margin-right ; (default: 720)
-                                    :w:header page-margin-header ; (default: 0)
-                                    :w:footer page-margin-footer}))))) ; (default: 0)
+    :keys [page-width page-height page-orientation page-margin body]}]
+  (let [page-width (or page-width "210mm")
+        page-height (or page-height "297mm")
+        page-orientation (or page-orientation "portrait")
+        ;; TODO: Create page-margin maker.
+        page-margin (or page-margin [720 720 720 720 0 0])]
+    ;; Document
+    (node :w:document word-xmlns
+          ;; w:body
+          (node :w:body {}
+                body
+                ;; Document Final Section Properties
+                (node :w:sectPr {}
+                      ;; Page Size
+                      (node :w:pgSz {:w:w (unit/convert page-width "dxa") ; Page Width
+                                     :w:h (unit/convert page-height "dxa") ; Page Height
+                                     :w:orient (name page-orientation) ; Page Orientation
+                                     :w:code 9}) ; Printer Paper Code
+                      ;; Page Margins
+                      (node :w:pgMar {:w:top (get page-margin 0)
+                                      :w:bottom (get page-margin 1)
+                                      :w:left (get page-margin 2)
+                                      :w:right (get page-margin 3)
+                                      :w:header (get page-margin 4)
+                                      :w:footer (get page-margin 5)}))))))
 
 (defn- run-properties
   "Creates w:rPr tag node. Called by paragaph-style."

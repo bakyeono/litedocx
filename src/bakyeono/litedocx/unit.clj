@@ -23,6 +23,7 @@
    :emu      914400
    :feet     12
    :ft       12
+   :half-pt  144
    :in.      1
    :inch     1
    :km       0.0000254

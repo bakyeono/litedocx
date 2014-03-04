@@ -64,22 +64,22 @@
 (defn sample1
   []
   (write-docx "SAMPLE1.docx"
-              :styles [(w/paragraph-style "headline"
+              :styles [(w/paragraph-style "title"
                                           :font "Sans Serif"
                                           :font-color "000000"
-                                          :font-size 40
+                                          :font-size 20
                                           :bold true
                                           :align "both")
                        (w/paragraph-style "date"
                                           :font "Arial"
                                           :font-color "4444CC"
-                                          :font-size 20
+                                          :font-size 11
                                           :italics true
                                           :align "right")
                        (w/paragraph-style "author"
                                           :font "Arial"
                                           :font-color "aa0000"
-                                          :font-size 24
+                                          :font-size 11
                                           :algin "right")
                        (w/paragraph-style "monospace"
                                           :font "Monospace"
@@ -88,19 +88,19 @@
                        (w/paragraph-style "h1"
                                           :font "Arial"
                                           :font-color "000000"
-                                          :font-size 24
+                                          :font-size 16
                                           :bold true)
                        (w/paragraph-style "body"
                                           :font "Arial"
                                           :font-color "000000"
-                                          :font-size 20)
+                                          :font-size 12)
                        (w/table-style "table"
                                       :font "Arial"
                                       :font-color "449944"
                                       :align "center")]
               ;; TODO: need a better way to create resource meta datas
               :resources (w/resources ["image/png" "foo.png" (load-byte-array "foo.png")])
-              :body [(w/p "headline" "A Sample Document Written With Litedocx")
+              :body [(w/p "title" "A Sample Document Written With Litedocx")
                      (w/p "date" (str (java.util.Date.)))
                      (w/p "author" "Bak Yeon O")
                      (w/p "body" "")

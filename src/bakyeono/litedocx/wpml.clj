@@ -322,7 +322,7 @@
                            :w:cs font})) ; Complex Script Font
         (when font-size
           ;; Font Size
-          (node :w:sz {:w:val font-size}))
+          (node :w:sz {:w:val (* 2 font-size)})) ; Half Point Value = (2 x Point Value)
         (when font-color
           ;; Run Content Color
           (node :w:color {:w:val font-color}))

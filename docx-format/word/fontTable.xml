@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<w:fonts xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+  <w:font w:name="맑은 고딕">
+    <w:panose1 w:val="020B0503020000020004" />
+    <w:charset w:val="81" />
+    <w:family w:val="modern" />
+    <w:pitch w:val="variable" />
+    <w:sig w:usb0="900002AF" w:usb1="09D77CFB" w:usb2="00000012" w:usb3="00000000" w:csb0="00080001" w:csb1="00000000" />
+  </w:font>
+  <w:font w:name="Times New Roman">
+    <w:panose1 w:val="02020603050405020304" />
+    <w:charset w:val="00" />
+    <w:family w:val="roman" />
+    <w:pitch w:val="variable" />
+    <w:sig w:usb0="20002A87" w:usb1="80000000" w:usb2="00000008" w:usb3="00000000" w:csb0="000001FF" w:csb1="00000000" />
+  </w:font>
+</w:fonts>
